@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  #realm
+    - each r in realm
+      div.realm
+        div.created_at= realm.created_at
+        div.title
+          a(href="/blog/"+r._id)!= r.name
+        div.body= r.timezone

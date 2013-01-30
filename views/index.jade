@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  script
+    var realms = !{realms}
+
+  h1= title
+  #realms
+    - each realm in realms
+      div.realm
+        div.created_at= realm.created_at
+        div.title
+          a(href="/blog/"+realm._id)!= realm.title
+        div.body= realm.body
