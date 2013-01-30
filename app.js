@@ -43,13 +43,13 @@ app.get('/', function(req, res){
 app.get('/realm/:id', function(req, res){
   RealmProvider.findById(req.params.id, function(error, realm) {
 
-    console.log('\n------------------[' + realm.name + ']------------------\n');
+    console.log('\n[' + realm.name + ']------------------\n');
 
     var file, lastModified, auctions;
 
     try {
 
-      console.log('\n------------------[PULL LOCAL: FIRST TRY]------------------\n');
+      console.log('\n[PULL LOCAL: FIRST TRY]------------------\n');
 
       AuctionProvider.findByName(realm.name, function(error, response) {
         if( error ) return;
@@ -75,7 +75,7 @@ app.get('/realm/:id', function(req, res){
 
                   if(typeof response == 'object' && response) {
 
-                    console.log('\n------------------[PULL REMOTE]------------------\n');
+                    console.log('\n[PULL REMOTE]------------------\n');
 
                     var neutral  = response.neutral;
                     var alliance = response.alliance;
@@ -87,9 +87,9 @@ app.get('/realm/:id', function(req, res){
 
                     AuctionProvider.save(response, function(err, doc) {
 
-                      console.log('\n------------------[SAVE]------------------\n');
+                      console.log('\n[SAVE]------------------\n');
                       //console.log('\n' + response + '\n');
-                      console.log('\n------------------[END]-------------------\n');
+                      console.log('\n[END]-------------------\n');
 
                     });
 
@@ -97,7 +97,7 @@ app.get('/realm/:id', function(req, res){
                   
                   } else {
 
-                    console.log('\n------------------[PULL LOCAL: FINAL TRY]------------------\n');
+                    console.log('\n[PULL LOCAL: FINAL TRY]------------------\n');
 
                     AuctionProvider.findByName(realm.name, function(error, response) {
                       if( error ) return;
@@ -146,9 +146,9 @@ app.get('/realms', function(req, res){
 
         RealmProvider.save(realm, function(err, doc) {
 
-          console.log('\n------------------[SAVE]------------------\n');
+          console.log('\n[SAVE]------------------\n');
           console.log('\n' + realm + '\n');
-          console.log('\n------------------[END]-------------------\n');
+          console.log('\n[END]-------------------\n');
 
         });
 

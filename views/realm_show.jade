@@ -7,7 +7,7 @@ block content
 
   p 
     a(href='/') Return to list
-  h4= title
+  h2= title
   table#realm.table.table-hover
     thead
       tr
@@ -44,6 +44,30 @@ block content
             td {{ auction.item }} 
             td {{ auction.buyout }}
     div.tab-pane#horde
-      p Horde auctions
+      table.table.table-hover
+        thead
+          tr
+            th 
+              p Item
+              input(type='text', ng-model='query.item', placeholder='eg. 12345')
+            th
+              p Buyout
+              input(type='text', ng-model='query.buyout', placeholder='eg. 12345')
+        tbody
+          tr(ng-repeat='auction in hordeAuctions | filter:query')
+            td {{ auction.item }} 
+            td {{ auction.buyout }}
     div.tab-pane#alliance
-      p Neutral auctions
+      table.table.table-hover
+        thead
+          tr
+            th 
+              p Item
+              input(type='text', ng-model='query.item', placeholder='eg. 12345')
+            th
+              p Buyout
+              input(type='text', ng-model='query.buyout', placeholder='eg. 12345')
+        tbody
+          tr(ng-repeat='auction in allianceAuctions | filter:query')
+            td {{ auction.item }} 
+            td {{ auction.buyout }}

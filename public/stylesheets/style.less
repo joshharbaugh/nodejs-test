@@ -1,8 +1,14 @@
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+@import url(http://fonts.googleapis.com/css?family=Droid+Serif);
+
+@sansFontFamily:        "Helvetica Neue", Helvetica, Arial, sans-serif;
+@serifFontFamily:       "Droid Serif", Georgia, "Times New Roman", Times, serif;
+
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	font-family: @serifFontFamily;
 }
 
-a {
-  color: #00B7FF;
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Yanone Kaffeesatz", @sansFontFamily;
+	text-transform: uppercase; 
 }
