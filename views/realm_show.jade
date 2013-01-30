@@ -7,7 +7,7 @@ block content
 
   p 
     a(href='/') Return to list
-  h1= title
+  h4= title
   table#realm.table.table-hover
     thead
       tr
@@ -22,24 +22,28 @@ block content
 
   ul.nav.nav-tabs
     li.active
-      a(href='#alliance', data-toggle='tab') Alliance
+      a(href='#neutral', data-toggle='tab') Neutral
     li
       a(href='#horde', data-toggle='tab') Horde
     li
-      a(href='#neutral', data-toggle='tab') Neutral
+      a(href='#alliance', data-toggle='tab') Alliance
   
   div.tab-content
-    div.tab-pane.active#alliance
+    div.tab-pane.active#neutral
       table.table.table-hover
         thead
           tr
-            th Item
-            th Buyout
+            th 
+              p Item
+              input(type='text', ng-model='query.item', placeholder='eg. 12345')
+            th
+              p Buyout
+              input(type='text', ng-model='query.buyout', placeholder='eg. 12345')
         tbody
-          tr
-            td
-            td
+          tr(ng-repeat='auction in neutralAuctions | filter:query')
+            td {{ auction.item }} 
+            td {{ auction.buyout }}
     div.tab-pane#horde
       p Horde auctions
-    div.tab-pane#neutral
+    div.tab-pane#alliance
       p Neutral auctions

@@ -16,13 +16,6 @@ RealmProvider.prototype.getCollection= function(callback) {
   });
 };
 
-RealmProvider.prototype.getAuctionsCollection= function(callback) {
-  this.db.collection('auctions', function(error, auctions_collection) {
-    if( error ) callback(error);
-    else callback(null, auctions_collection);
-  });
-};
-
 RealmProvider.prototype.findAll = function(callback) {
   this.getCollection(function(error, realms_collection) {
     if( error ) callback(error)
