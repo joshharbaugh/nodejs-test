@@ -16,6 +16,13 @@ RealmProvider.prototype.getCollection= function(callback) {
   });
 };
 
+RealmProvider.prototype.getAuctionsCollection= function(callback) {
+  this.db.collection('auctions', function(error, auctions_collection) {
+    if( error ) callback(error);
+    else callback(null, auctions_collection);
+  });
+};
+
 RealmProvider.prototype.findAll = function(callback) {
   this.getCollection(function(error, realms_collection) {
     if( error ) callback(error)
@@ -50,12 +57,15 @@ RealmProvider.prototype.save = function(realms, callback) {
       for( var i =0;i< realms.length;i++ ) {
         realm = realms[i];
         realm.created_at = new Date();
+
+        // GET auctions
+
         realm.alliance = [];
         realm.horde = [];
         realm.neutral = [];
       }
 
-      realms_collection.insert(realms, function() {
+      realms_collection.update({name: realm.name}, realm, { upsert: true }, function() {
         callback(null, realms);
       });
     }

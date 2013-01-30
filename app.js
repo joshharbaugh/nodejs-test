@@ -3,7 +3,9 @@ var express = require('express')
   , request = require('request')
   , path    = require('path')
   , fs      = require('fs')
-  , RealmProvider = require('./realmprovider-mongodb').RealmProvider;
+  , armory  = require('armory').defaults({ region: 'us' })
+  , RealmProvider   = require('./realmprovider-mongodb').RealmProvider
+  , AuctionProvider = require('./auctionprovider-mongodb').AuctionProvider;
 
 var app = express();
 
@@ -29,17 +31,99 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-var RealmProvider = new RealmProvider('localhost', 27017);
+var RealmProvider   = new RealmProvider('localhost', 27017);
+var AuctionProvider = new AuctionProvider('localhost', 27017);
 
 app.get('/', function(req, res){
-  RealmProvider.findAll(function(err, docs){
-    res.render('index.jade', { title: '', realms:docs });
+  RealmProvider.findAll(function(err, realms){
+    res.render('index.jade', { title: '', realms:realms, collection:JSON.stringify(realms) });
   });
 });
 
 app.get('/realm/:id', function(req, res){
   RealmProvider.findById(req.params.id, function(error, realm) {
-      res.render('realm_show.jade', { title: realm.name, realm:realm });
+
+    console.log('\n------------------[' + realm.name + ']------------------\n');
+
+    var file, lastModified, auctions;
+
+    try {
+
+      armory.auction(realm.name, function(err, urls) {
+          
+          file         = urls[0].url;
+          lastModified = urls[0].lastModified;
+
+          armory.auctionData({
+              name: realm.name,
+              lastModified: lastModified
+          }, function(err, response) {          
+              if( err ) return;
+              if(response) {
+
+                console.log('\n------------------[PULL REMOTE]------------------\n');
+
+                var neutral  = response.neutral;
+                var alliance = response.alliance;
+                var horde    = response.horde;
+                var name     = response.realm.name;
+
+                console.log('\nAlliance = ' + alliance,
+                            '\nHorde    = ' + horde + '\n\n');
+
+                AuctionProvider.save(response, function(err, doc) {
+
+                  console.log('\n------------------[SAVE]------------------\n');
+                  console.log('\n' + response + '\n');
+                  console.log('\n------------------[END]-------------------\n');
+
+                });
+
+                res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response) });
+              
+              } else {
+
+                console.log('\n------------------[PULL LOCAL]------------------\n');
+
+                AuctionProvider.findByName(realm.name, function(error, response) {
+                  if( error ) return;
+                  if( response ) {
+                  
+                    console.log("Response: " + response);
+                    res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response) });
+                  
+                  } else {
+
+                    res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}) });
+
+                  }
+
+                });
+
+              }
+          });
+      });
+
+    } catch(e) {
+
+      res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}) });
+    
+    }
+
+    /*armory.auctionData(realm.name, function (err, res) {
+      
+      var neutral  = res.neutral;
+      var alliance = res.alliance;
+      var horde    = res.horde;
+      var name     = res.realm.name;
+
+      console.log('\n---------[' + name + ']---------\n');
+
+      console.log('\nAlliance length = ' + alliance.length,
+                  '\nHorde length = ' + horde.length + '\n\n');
+
+    });*/
+
   });
 });
 
@@ -53,24 +137,162 @@ app.get('/realms', function(req, res){
 
         var realm = resp.realms[key];
 
-        console.log(realm, typeof realm);
-
         //for (var prop in realm) {
         //  alert(prop + " = " + realm[prop]);
         //}
 
         RealmProvider.save(realm, function(err, doc) {
 
-          console.log('Saved.');
+          console.log('\n------------------[SAVE]------------------\n');
+          console.log('\n' + realm + '\n');
+          console.log('\n------------------[END]-------------------\n');
 
         });
 
       }
 
-      res.send("All done.");
-
-      //res.render('index.jade', { title: '', realms: JSON.stringify(body) });
+      res.redirect('/');
     }
+  });
+});
+
+app.get('/auctions/all', function(req, res) {
+  RealmProvider.findAll(function(err, realms) {
+
+    for (var key in realms) {
+
+      var realm = realms[key];
+
+      request('http://us.battle.net/api/wow/auction/data/' + realm.slug, function (error, response, body) {
+        if(error) throw error;
+        if (!error && response.statusCode == 200) {
+        
+          var resp        = JSON.parse(body);
+          var currentTime = Math.round(new Date().getTime()/1000);
+          var refresh     = false;
+
+          for (var key in resp.files) {
+
+            var files        = resp.files[key];
+            var lastModified = (files.lastModified/1000);
+            var timeDiff     = (currentTime-lastModified);
+
+            console.log('\nurl          = ' + files.url,
+                        '\nlastModified = ' + lastModified,
+                        '\ncurrentTime  = ' + currentTime,
+                        '\ntimeDiff     = ' + timeDiff);
+
+            console.log('\n----------------------------------\n');
+
+            if(timeDiff > 86400) {
+              refresh = true;
+            }
+
+            request(files.url, function (e, r, b) {
+              if ( e ) throw e;
+              if( !e && r.statusCode == 200 ) {
+
+                var resp = JSON.parse(b);
+
+                for (var key in resp) {
+
+                  var name     = resp.realm.name;
+                  var alliance = resp.alliance;
+                  var horde    = resp.horde;
+                  var neutral  = resp.neutral;
+
+                }
+
+                console.log('\nname     = ' + name,
+                            '\nalliance = ' + alliance,
+                            '\nhorde    = ' + horde,
+                            '\nneutral  = ' + neutral);
+
+              }
+            });
+
+          }
+
+        }
+
+      });
+
+    }
+
+    console.log('Done');
+
+    res.send('All done');
+    
+  });
+})
+
+app.get('/auctions/:id', function(req, res) {
+  RealmProvider.findById(function(err, realms) {
+
+    for (var key in realms) {
+
+      var realm = realms[key];
+
+      request('http://us.battle.net/api/wow/auction/data/' + realm.slug, function (error, response, body) {
+        if(error) throw error;
+        if (!error && response.statusCode == 200) {
+        
+          var resp        = JSON.parse(body);
+          var currentTime = Math.round(new Date().getTime()/1000);
+          var refresh     = false;
+
+          for (var key in resp.files) {
+
+            var files        = resp.files[key];
+            var lastModified = (files.lastModified/1000);
+            var timeDiff     = (currentTime-lastModified);
+
+            console.log('\nurl          = ' + files.url,
+                        '\nlastModified = ' + lastModified,
+                        '\ncurrentTime  = ' + currentTime,
+                        '\ntimeDiff     = ' + timeDiff);
+
+            console.log('\n----------------------------------\n');
+
+            if(timeDiff > 86400) {
+              refresh = true;
+            }
+
+            request(files.url, function (e, r, b) {
+              if ( e ) throw e;
+              if( !e && r.statusCode == 200 ) {
+
+                var resp = JSON.parse(b);
+
+                for (var key in resp) {
+
+                  var name     = resp.realm.name;
+                  var alliance = resp.alliance;
+                  var horde    = resp.horde;
+                  var neutral  = resp.neutral;
+
+                }
+
+                console.log('\nname     = ' + name,
+                            '\nalliance = ' + alliance,
+                            '\nhorde    = ' + horde,
+                            '\nneutral  = ' + neutral);
+
+              }
+            });
+
+          }
+
+        }
+
+      });
+
+    }
+
+    console.log('Done');
+
+    res.send('All done');
+    
   });
 });
 

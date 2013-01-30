@@ -1,11 +1,45 @@
 extends layout
 
 block content
+  script
+    var realm    = !{document}
+    var auctions = !{auctions}
+
+  p 
+    a(href='/') Return to list
   h1= title
-  #realm
-    - each r in realm
-      div.realm
-        div.created_at= realm.created_at
-        div.title
-          a(href="/blog/"+r._id)!= r.name
-        div.body= r.timezone
+  table#realm.table.table-hover
+    thead
+      tr
+        th Battlegroup
+        th Population
+        th Timezone
+    tbody
+      tr
+        td= realm.battlegroup
+        td= realm.population
+        td= realm.timezone
+
+  ul.nav.nav-tabs
+    li.active
+      a(href='#alliance', data-toggle='tab') Alliance
+    li
+      a(href='#horde', data-toggle='tab') Horde
+    li
+      a(href='#neutral', data-toggle='tab') Neutral
+  
+  div.tab-content
+    div.tab-pane.active#alliance
+      table.table.table-hover
+        thead
+          tr
+            th Item
+            th Buyout
+        tbody
+          tr
+            td
+            td
+    div.tab-pane#horde
+      p Horde auctions
+    div.tab-pane#neutral
+      p Neutral auctions

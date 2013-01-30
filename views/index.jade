@@ -2,13 +2,20 @@ extends layout
 
 block content
   script
-    var realms = !{realms}
+    var realms = !{collection}
 
   h1= title
-  #realms
+  table#realms.table.table-hover
+    thead
+      tr
+        th Name
+        th Status
+    tbody
     - each realm in realms
-      div.realm
-        div.created_at= realm.created_at
-        div.title
-          a(href="/blog/"+realm._id)!= realm.title
-        div.body= realm.body
+      tr
+        td
+          a(href="/realm/"+realm._id.toHexString())!= realm.name
+        td= realm.status
+    tfoot
+      tr
+        td(colspan="2")= realms.length
