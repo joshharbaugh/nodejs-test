@@ -4,7 +4,7 @@ var express = require('express')
   , path    = require('path')
   , fs      = require('fs')
   , armory  = require('armory').defaults({ region: 'us' })
-  , RealmProvider   = require('./realmprovider-mongodb').RealmProvider
+  , RealmProvider   = require('./realmprovider-mongodb').RealmProvider;
   , AuctionProvider = require('./auctionprovider-mongodb').AuctionProvider;
 
 var app = express();
@@ -43,90 +43,115 @@ app.get('/', function(req, res){
 app.get('/realm/:id', function(req, res){
   RealmProvider.findById(req.params.id, function(error, realm) {
 
-    console.log('\n[' + realm.name + ']------------------\n');
+    console.log('[REALM: ' + realm.name + ']\n\n');
 
     var file, lastModified, auctions;
 
     try {
 
-      console.log('\n[PULL LOCAL: FIRST TRY]------------------\n');
+      armory.auction(realm.name, function(err, urls) {
+          
+          file         = urls[0].url;
 
-      AuctionProvider.findByName(realm.name, function(error, response) {
-        if( error ) return;
-        if( response ) {
-        
-          console.log("Response Type: ", typeof response);
-          res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response) });
-        
-        } else {
+          lastModified = urls[0].lastModified;
 
-          armory.auction(realm.name, function(err, urls) {
+          console.log('[PULL REMOTE: CHECKING LAST-MODIFIED]\n\n');
+
+          armory.auctionData({
               
-              file         = urls[0].url;
-              lastModified = urls[0].lastModified;
+              lastModified: lastModified,
+              
+              name: realm.name              
+          
+          }, function(err, response) {          
+              if( err ) return;
 
-              armory.auctionData({
-                  //lastModified: lastModified,
-                  name: realm.name              
-              }, function(err, response) {          
-                  if( err ) return;
+              console.log('[RESPONSE TYPE: ' + typeof response + ']');
 
-                  console.log(typeof response);
+              if( typeof response == 'object' && response ) {
 
-                  if(typeof response == 'object' && response) {
+                var neutral  = response.neutral;
+                var alliance = response.alliance;
+                var horde    = response.horde;
+                var name     = response.realm.name;
 
-                    console.log('\n[PULL REMOTE]------------------\n');
+                console.log('\nAlliance = ' + alliance,
+                            '\nHorde    = ' + horde + '\n\n');
 
-                    var neutral  = response.neutral;
-                    var alliance = response.alliance;
-                    var horde    = response.horde;
-                    var name     = response.realm.name;
+                AuctionProvider.save(response, req.params.id, function(err, doc) {
 
-                    console.log('\nAlliance = ' + alliance,
-                                '\nHorde    = ' + horde + '\n\n');
+                  console.log('[SAVING]\n\n');
 
-                    AuctionProvider.save(response, function(err, doc) {
+                });
 
-                      console.log('\n[SAVE]------------------\n');
-                      //console.log('\n' + response + '\n');
-                      console.log('\n[END]-------------------\n');
+                res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response) });
+              
+              } else {
 
-                    });
+                console.log('[PULL LOCAL]\n\n');
 
+                AuctionProvider.findByName(realm.name, function(error, response) {
+                  if( error ) return;
+                  
+                  console.log('[RESPONSE TYPE: ' + typeof response + ']');
+
+                  if( typeof response == 'object' && response ) {
+                  
                     res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response) });
                   
                   } else {
 
-                    console.log('\n[PULL LOCAL: FINAL TRY]------------------\n');
+                    console.log('[PULL REMOTE: NOT CHECKING LAST-MODIFIED]\n\n');
 
-                    AuctionProvider.findByName(realm.name, function(error, response) {
-                      if( error ) return;
-                      if( response ) {
-                      
-                        console.log("Response Type: ", typeof response);
-                        res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response) });
-                      
-                      } else {
+                    armory.auctionData({
+                        
+                        name: realm.name              
+                    
+                    }, function(err, response) {          
+                        if( err ) return;
 
-                        console.log("No response");
-                        res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}) });
+                        console.log('[RESPONSE TYPE: ' + typeof response + ']');
 
-                      }
+                        if( typeof response == 'object' && response ) {
+
+                          var neutral  = response.neutral;
+                          var alliance = response.alliance;
+                          var horde    = response.horde;
+                          var name     = response.realm.name;
+
+                          console.log('\nAlliance = ' + alliance,
+                                      '\nHorde    = ' + horde + '\n\n');
+
+                          AuctionProvider.save(response, req.params.id, function(err, doc) {
+
+                            console.log('[SAVING]\n\n');
+
+                          });
+
+                          res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response) });
+
+                        } else {
+
+                          console.log('[DEFAULT: RENDER WITH NO AUCTIONS]\n\n');
+                          res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}) });
+
+                        }
 
                     });
 
                   }
 
-              });
+                });
+
+              }
 
           });
-
-        }
 
       });
 
     } catch(e) {
 
+      console.log('[NO API RESPONSE: RENDER WITH NO AUCTIONS]\n\n');
       res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}) });
     
     }
