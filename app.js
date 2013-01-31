@@ -247,7 +247,7 @@ app.get('/auctions/all', function(req, res) {
 
     }
 
-    console.log('Done');
+    console.log('GET /auctions/all -- [DONE]');
 
     res.send('All done');
     
@@ -255,7 +255,7 @@ app.get('/auctions/all', function(req, res) {
 })
 
 app.get('/auctions/:id', function(req, res) {
-  RealmProvider.findById(function(err, realms) {
+  RealmProvider.findById(req.params.id, function(err, realms) {
 
     for (var key in realms) {
 
@@ -317,7 +317,7 @@ app.get('/auctions/:id', function(req, res) {
 
     }
 
-    console.log('Done');
+    console.log('GET /auctions/' + req.params.id + ' -- [DONE]');
 
     res.send('All done');
     
