@@ -10,14 +10,16 @@ app.controller('AppCtrl', ['$scope', function($scope) {
 
 app.controller('RealmCtrl', ['$scope', function($scope) {
 
-	var realm    = window.realm    || {};
-	var auctions = window.auctions || {};
+	var realm       = window.realm    || {};
+	var auctions    = window.auctions || {};
+	var professions = window.professions || {};
 
 	try {
 
 		$scope.allianceAuctions = auctions.alliance.auctions || {};
 		$scope.hordeAuctions    = auctions.horde.auctions    || {};
 		$scope.neutralAuctions  = auctions.neutral.auctions  || {};
+		$scope.professions      = professions                || {};
 
 	} catch(e) {}
 
