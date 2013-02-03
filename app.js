@@ -5,7 +5,8 @@ var express = require('express')
   , fs      = require('fs')
   , armory  = require('armory').defaults({ region: 'us' })
   , RealmProvider   = require('./realmprovider-mongodb').RealmProvider
-  , AuctionProvider = require('./auctionprovider-mongodb').AuctionProvider;
+  , AuctionProvider = require('./auctionprovider-mongodb').AuctionProvider
+  , ProfessionProvider = require('./professionprovider-mongodb').ProfessionProvider;
 
 var app = express();
 
@@ -33,7 +34,10 @@ app.configure('production', function(){
 
 var RealmProvider       = new RealmProvider('localhost', 27017);
 var AuctionProvider     = new AuctionProvider('localhost', 27017);
-var ProfessionsProvider =
+var ProfessionProvider  = new ProfessionProvider('localhost', 27017);
+
+/*
+db.realms.update({}, {$set:{professions:[]}}, false, true)
 {
   "alchemy": {
     "alliance": {
@@ -395,7 +399,7 @@ var ProfessionsProvider =
       ]
     }
   }
-};
+};*/
 
 app.get('/', function(req, res){
   RealmProvider.findAll(function(err, realms){
@@ -407,6 +411,7 @@ app.get('/realm/:id', function(req, res){
   RealmProvider.findById(req.params.id, function(error, realm) {
 
     console.log('[REALM: ' + realm.name + ']\n\n');
+    console.log('[PROFESSIONS]', realm.professions);
 
     var file, lastModified, auctions;
 
@@ -447,7 +452,7 @@ app.get('/realm/:id', function(req, res){
 
                 });
 
-                res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response), professions:JSON.stringify(ProfessionsProvider) });
+                res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response), professions:JSON.stringify(realm.professions) });
               
               } else {
 
@@ -460,7 +465,7 @@ app.get('/realm/:id', function(req, res){
 
                   if( typeof response == 'object' && response ) {
                   
-                    res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response), professions:JSON.stringify(ProfessionsProvider) });
+                    res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response), professions:JSON.stringify(realm.professions) });
                   
                   } else {
 
@@ -491,12 +496,12 @@ app.get('/realm/:id', function(req, res){
 
                           });
 
-                          res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response), professions:JSON.stringify(ProfessionsProvider) });
+                          res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(response), professions:JSON.stringify(realm.professions) });
 
                         } else {
 
                           console.log('[DEFAULT: RENDER WITH NO AUCTIONS]\n\n');
-                          res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}), professions:JSON.stringify(ProfessionsProvider) });
+                          res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}), professions:JSON.stringify(realm.professions) });
 
                         }
 
@@ -515,7 +520,7 @@ app.get('/realm/:id', function(req, res){
     } catch(e) {
 
       console.log('[NO API RESPONSE: RENDER WITH NO AUCTIONS]\n\n');
-      res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}), professions:JSON.stringify(ProfessionsProvider) });
+      res.render('realm_show.jade', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}), professions:JSON.stringify(realm.professions) });
     
     }
 
