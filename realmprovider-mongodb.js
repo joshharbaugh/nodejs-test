@@ -50,9 +50,6 @@ RealmProvider.prototype.save = function(realms, callback) {
       for( var i =0;i< realms.length;i++ ) {
         realm = realms[i];
         realm.created_at = new Date();
-
-        // GET auctions
-
         realm.alliance = [];
         realm.horde = [];
         realm.neutral = [];

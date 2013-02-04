@@ -10,17 +10,17 @@ ProfessionProvider =  function(host, port) {
 };
 
 ProfessionProvider.prototype.getCollection= function(callback) {
-  this.db.collection('professions', function(error, auctions_collection) {
+  this.db.collection('professions', function(error, professions_collection) {
     if( error ) callback(error);
-    else callback(null, auctions_collection);
+    else callback(null, professions_collection);
   });
 };
 
 ProfessionProvider.prototype.findAll = function(callback) {
-  this.getCollection(function(error, auctions_collection) {
+  this.getCollection(function(error, professions_collection) {
     if( error ) callback(error)
     else {
-      auctions_collection.find().toArray(function(error, results) {
+      professions_collection.find().sort({name:1}).toArray(function(error, results) {
         if( error ) callback(error)
         else callback(null, results)
       });
@@ -29,10 +29,10 @@ ProfessionProvider.prototype.findAll = function(callback) {
 };
 
 ProfessionProvider.prototype.findByName = function(name, callback) {
-  this.getCollection(function(error, auctions_collection) {
+  this.getCollection(function(error, professions_collection) {
     if( error ) callback(error)
     else {
-      auctions_collection.findOne({'realm.name': name}, function(error, result) {
+      professions_collection.findOne({name: name}, function(error, result) {
         if( error ) callback(error)
         else callback(null, result)
       });
@@ -41,10 +41,10 @@ ProfessionProvider.prototype.findByName = function(name, callback) {
 };
 
 ProfessionProvider.prototype.findById = function(id, callback) {
-  this.getCollection(function(error, auctions_collection) {
+  this.getCollection(function(error, professions_collection) {
     if( error ) callback(error)
     else {
-      auctions_collection.findOne({_id: auctions_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, function(error, result) {
+      professions_collection.findOne({_id: professions_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, function(error, result) {
         if( error ) callback(error)
         else callback(null, result)
       });
@@ -52,15 +52,15 @@ ProfessionProvider.prototype.findById = function(id, callback) {
   });
 };
 
-ProfessionProvider.prototype.save = function(auctionData, id, callback) {
-  this.getCollection(function(error, auctions_collection) {
+ProfessionProvider.prototype.save = function(id, payload, callback) {
+  this.getCollection(function(error, professions_collection) {
     if( error ) callback(error)
     else {
 
-      auctionData.created_at = new Date().toUTCString();
+      payload.created_at = new Date().toUTCString();
 
-      auctions_collection.update({_id: auctions_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, auctionData, { upsert: true }, function() {
-        callback(null, auctionData);
+      professions_collection.update({_id: professions_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, {$push: {"items": payload} }, { upsert: true }, function() {
+        callback(null, "success");
       });
     }
   });
