@@ -66,4 +66,15 @@ ProfessionProvider.prototype.save = function(id, payload, callback) {
   });
 };
 
+ProfessionProvider.prototype.delete = function(id, payload, callback) {
+  this.getCollection(function(error, professions_collection) {
+    if( error ) callback(error)
+    else {
+      professions_collection.update({_id: professions_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, {$pull: {"items": payload} }, function() {
+        callback(null, "success");
+      });
+    }
+  })
+}
+
 exports.ProfessionProvider = ProfessionProvider;

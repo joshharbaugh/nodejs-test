@@ -33,8 +33,16 @@ app.get('/realm/:id', realm.read);
 app.get('/realms', realm.list);
 
 app.get('/admin', admin.index);
+
+// REALM
+
+app.get('/admin/realm/:name', admin.list);
+
+// ITEM
+
 app.get('/admin/edit/:id', admin.read);
 app.post('/admin/edit/:id', admin.update);
+app.delete('/admin/edit/:id', admin.delete);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

@@ -53,6 +53,7 @@ RealmProvider.prototype.save = function(realms, callback) {
         realm.alliance = [];
         realm.horde = [];
         realm.neutral = [];
+        //db.realms.find({}, {_id:0, "professions.alchemy.alliance.cost":1})
         realm.professions =
         {
           "alchemy": {
