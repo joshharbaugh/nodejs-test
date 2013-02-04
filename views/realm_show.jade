@@ -12,62 +12,12 @@ block content
     small.pull-right= realm.battlegroup
 
   ul.nav.nav-pills
-    //
-      li.active
-        a(href='#neutral', data-toggle='tab') Neutral
-      li
-        a(href='#horde', data-toggle='tab') Horde
-      li
-        a(href='#alliance', data-toggle='tab') Alliance
     li.active
       a(href='#professions', data-toggle='tab') Professions
     li
       a(href='#profession-items', data-toggle='tab') Profession Items
   
   div.pill-content
-    //
-      div.tab-pane.active#neutral
-        table.table.table-hover
-          thead
-            tr
-              th 
-                p Item
-                input(type='text', ng-model='query.item', placeholder='eg. 12345')
-              th
-                p Buyout
-                input(type='text', ng-model='query.buyout', placeholder='eg. 12345')
-          tbody
-            tr(ng-repeat='auction in neutralAuctions | filter:query')
-              td {{ auction.item }} 
-              td {{ auction.buyout }}
-      div.tab-pane#horde
-        table.table.table-hover
-          thead
-            tr
-              th 
-                p Item
-                input(type='text', ng-model='query.item', placeholder='eg. 12345')
-              th
-                p Buyout
-                input(type='text', ng-model='query.buyout', placeholder='eg. 12345')
-          tbody
-            tr(ng-repeat='auction in hordeAuctions | filter:query')
-              td {{ auction.item }} 
-              td {{ auction.buyout }}
-      div.tab-pane#alliance
-        table.table.table-hover
-          thead
-            tr
-              th 
-                p Item
-                input(type='text', ng-model='query.item', placeholder='eg. 12345')
-              th
-                p Buyout
-                input(type='text', ng-model='query.buyout', placeholder='eg. 12345')
-          tbody
-            tr(ng-repeat='auction in allianceAuctions | filter:query')
-              td {{ auction.item }} 
-              td {{ auction.buyout }}
     div.pill-pane.active#professions
       table.table.table-hover
         thead
@@ -98,7 +48,8 @@ block content
               ul
                 li.pull-left(ng-repeat='item in profession.alliance.items')
                   span.span3.label.label-info {{ item.name }}
-                  span.span2.label.muted {{ item.realmCost }}
+                  span.span2.label.muted(ng-show='item.realmCost != 0') {{ item.realmCost }}
+                  span.span2.label.muted(ng-hide='item.realmCost != 0') {{ item.globalCost }}
             td(width='30%')
               ul
                 li.pull-left(ng-repeat='item in profession.horde.items')

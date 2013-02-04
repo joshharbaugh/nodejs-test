@@ -410,6 +410,8 @@ app.get('/', function(req, res){
 app.get('/realm/:id', function(req, res){
   RealmProvider.findById(req.params.id, function(error, realm) {
 
+    if( error ) throw error;
+
     console.log('[REALM: ' + realm.name + ']\n\n');
     console.log('[PROFESSIONS]', realm.professions);
 
@@ -418,6 +420,8 @@ app.get('/realm/:id', function(req, res){
     try {
 
       armory.auction(realm.name, function(err, urls) {
+
+          if( err ) throw err;
           
           file         = urls[0].url;
 
@@ -540,8 +544,7 @@ app.get('/realms', function(req, res){
         RealmProvider.save(realm, function(err, doc) {
 
           console.log('\n[SAVE]------------------\n');
-          console.log('\n' + realm + '\n');
-          console.log('\n[END]-------------------\n');
+          console.log('\n' + doc[0].name + '\n');
 
         });
 
