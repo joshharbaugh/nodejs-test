@@ -25,6 +25,23 @@ exports.list = function(req, res) {
 	});
 }
 
+exports.create = function(req, res) {
+	request('http://us.battle.net/api/wow/realm/status', function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			var resp = JSON.parse(body);
+
+			for (var key in resp.realms) {
+				var realm = resp.realms[key];
+				RealmProvider.create(realm, function(err, doc) {
+					console.log('\n[SAVE]------------------\n');
+					console.log('\n' + doc[0].name + '\n');
+				});
+			}
+			res.redirect('/');
+		}
+	});
+}
+
 exports.read = function(req, res) {
 	RealmProvider.findById(req.params.id, function(error, realm) {
 		if( error ) res.send(500, error);

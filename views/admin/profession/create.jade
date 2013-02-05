@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+
+  form(method='POST', action='/admin/profession')
+    fieldset
+      legend Details
+      label ID
+      input(type='text', value='', name='_id', placeholder='_id')
+    
+      label Name
+      input(type='text', value='', name='name', placeholder='name')
+ 
+      div.form-actions
+        button(type='submit', class='btn btn-primary') Create

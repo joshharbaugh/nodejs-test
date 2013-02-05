@@ -9,7 +9,7 @@ RealmProvider =  function(host, port) {
   this.db.open(function(){});
 };
 
-RealmProvider.prototype.getCollection= function(callback) {
+RealmProvider.prototype.getCollection = function(callback) {
   this.db.collection('realms', function(error, realms_collection) {
     if( error ) callback(error);
     else callback(null, realms_collection);
@@ -32,7 +32,7 @@ RealmProvider.prototype.findById = function(id, callback) {
   this.getCollection(function(error, realms_collection) {
     if( error ) callback(error)
     else {
-      realms_collection.findOne({_id: realms_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, function(error, result) {
+      realms_collection.findOne({_id: id}, function(error, result) {
         if( error ) callback(error)
         else callback(null, result)
       });
@@ -49,10 +49,8 @@ RealmProvider.prototype.save = function(realms, callback) {
 
       for( var i =0;i< realms.length;i++ ) {
         realm = realms[i];
+        realm._id = realm.slug;
         realm.created_at = new Date();
-        realm.alliance = [];
-        realm.horde = [];
-        realm.neutral = [];
         //db.realms.find({}, {_id:0, "professions.alchemy.alliance.cost":1})
         realm.professions =
         {
@@ -419,7 +417,7 @@ RealmProvider.prototype.save = function(realms, callback) {
         };
       }
 
-      realms_collection.update({name: realm.name}, realm, { upsert: true }, function() {        
+      realms_collection.update({_id: realm.slug}, realm, { upsert: true }, function() {        
         callback(null, realms);
       });
     }

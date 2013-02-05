@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+  script
+    var profession = !{bootstrap}
+
+  ul.nav.nav-pills
+    li.active
+      a(href='#detail-pane', data-toggle='tab') Details
+    li
+      a(href='#items-pane', data-toggle='tab') Items
+
+  div.pill-content
+    div.pill-pane.active#detail-pane
+      form(method='POST', action='/admin/profession/' + profession._id)
+        input(type='hidden', name='_method', value='PUT')
+        fieldset
+          legend Details
+
+          label ID
+          input(type='text', value=profession._id, name='_id', placeholder='_id', disabled)
+    
+          label Name
+          input(type='text', value=profession.name, name='name', placeholder='name')
+    
+        div.form-actions
+          button(type='submit', class='btn btn-primary') Update
+
+    div.pill-pane#items-pane
+      legend Items
+      table.table
+      thead
+        th Item #
+        th Quantity
+        th Global Cost
+        th
+      tbody  
+        tr(ng-repeat='item in profession.items')
+          td {{ item._id }}
+          td {{ item.qty }}
+          td {{ item.globalCost }}
+          td: button(type='button', class='btn btn-danger', ng-click='removeItem(item._id)') Remove
+
+      form
+        fieldset
+          legend Add item
+            
+          label ID
+          input(type='text', name='_id', id='itemId')
+          
+          label Quantity
+          input(type='text', name='qty', id='itemQty')
+          
+          label Global Cost
+          input(type='text', name='globalCost', id='itemGlobalCost')
+          
+        div.form-actions
+          button(type='button', class='btn', ng-click='addItem()') Add

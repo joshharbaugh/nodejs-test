@@ -44,7 +44,7 @@ ProfessionProvider.prototype.findById = function(id, callback) {
   this.getCollection(function(error, professions_collection) {
     if( error ) callback(error)
     else {
-      professions_collection.findOne({_id: professions_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, function(error, result) {
+      professions_collection.findOne({_id: id}, function(error, result) {
         if( error ) callback(error)
         else callback(null, result)
       });
@@ -52,25 +52,62 @@ ProfessionProvider.prototype.findById = function(id, callback) {
   });
 };
 
-ProfessionProvider.prototype.save = function(id, payload, callback) {
+ProfessionProvider.prototype.create = function(id, payload, callback) {
   this.getCollection(function(error, professions_collection) {
     if( error ) callback(error)
     else {
 
       payload.created_at = new Date().toUTCString();
 
-      professions_collection.update({_id: professions_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, {$push: {"items": payload} }, { upsert: true }, function() {
+      professions_collection.update({_id: id}, payload, { upsert: true }, function() {
         callback(null, "success");
       });
     }
   });
 };
 
-ProfessionProvider.prototype.delete = function(id, payload, callback) {
+ProfessionProvider.prototype.update = function(id, payload, callback) {
   this.getCollection(function(error, professions_collection) {
     if( error ) callback(error)
     else {
-      professions_collection.update({_id: professions_collection.db.bson_serializer.ObjectID.createFromHexString(id)}, {$pull: {"items": payload} }, function() {
+
+      payload.modified_at = new Date().toUTCString();
+
+      //professions_collection.update({_id: id}, {$push: {"items": payload} }, { upsert: true }, function() {
+      professions_collection.update({_id: id}, payload, { upsert: true }, function() {
+        callback(null, "success");
+      });
+    }
+  });
+};
+
+ProfessionProvider.prototype.destroy = function(id, callback) {
+  this.getCollection(function(error, professions_collection) {
+    if( error ) callback(error)
+    else {
+      professions_collection.remove({_id: id}, function() {
+        callback(null, "success");
+      });
+    }
+  })
+}
+
+ProfessionProvider.prototype.updateItems = function(id, payload, callback) {
+  this.getCollection(function(error, professions_collection) {
+    if( error ) callback(error)
+    else {
+      professions_collection.update({_id: id}, {$push: {"items": payload} }, { upsert: true }, function() {
+        callback(null, "success");
+      });
+    }
+  });
+};
+
+ProfessionProvider.prototype.deleteItem = function(id, payload, callback) {
+  this.getCollection(function(error, professions_collection) {
+    if( error ) callback(error)
+    else {
+      professions_collection.update({_id: id}, {$pull: {"items": payload} }, function() {
         callback(null, "success");
       });
     }

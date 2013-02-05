@@ -4,20 +4,19 @@
 
 app.controller('AppCtrl', ['$scope', function($scope) {
 
-	var realms = window.realms || {};
+	var realms     = $scope.realms     = window.realms     || {};
+	var profession = $scope.profession = window.profession || {};
 
 }]);
 
 app.controller('RealmCtrl', ['$scope', function($scope) {
 
-	var realm       = window.realm    || {};
-	var professions = window.professions || {};
+	var realm       = $scope.realm       = window.realm       || {};
+	var professions = $scope.professions = window.professions || {};
 
 	try {
-	
-		$scope.professions = professions || {};
 
-		console.log('Professions', $scope.professions);
+		console.log('Professions', professions);
 
 	} catch(e) {
 

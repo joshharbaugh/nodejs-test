@@ -14,7 +14,7 @@ block content
     - each realm in realms
       tr
         td
-          a(href="/realm/"+realm._id.toHexString())!= realm.name
+          a(href="/realm/"+realm._id)!= realm.name
         td= realm.status
     tfoot
       tr

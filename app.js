@@ -2,6 +2,7 @@ var express = require('express')
   , http    = require('http')
   , path    = require('path')
   , realm   = require('./realm')
+  , profession = require('./profession')
   , admin   = require('./admin');
 
 var app = express();
@@ -28,21 +29,25 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
+// SETTING CONTENT-TYPE FOR ALL RESPONSES TO APPLICATION/JSON
+// app.get('/*', function(req, res, next) { res.contentType('application/json'); next(); });
+// app.post('/*', function(req, res, next) { res.contentType('application/json'); next(); });
+// app.put('/*', function(req, res, next) { res.contentType('application/json'); next(); });
+// app.delete('/*', function(req, res, next) { res.contentType('application/json'); next(); });
+
+// FRONT-END ROUTES
 app.get('/', realm.index);
 app.get('/realm/:id', realm.read);
 app.get('/realms', realm.list);
 
+// BACK-END ROUTES
 app.get('/admin', admin.index);
-
-// REALM
-
-app.get('/admin/realm/:name', admin.list);
-
-// ITEM
-
-app.get('/admin/edit/:id', admin.read);
-app.post('/admin/edit/:id', admin.update);
-app.delete('/admin/edit/:id', admin.delete);
+app.get('/admin/professions', profession.index);
+app.get('/admin/profession', profession.show);
+app.post('/admin/profession', profession.create);
+app.get('/admin/profession/:id', profession.read);
+app.put('/admin/profession/:id', profession.update);
+app.delete('/admin/profession/:id', profession.delete);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

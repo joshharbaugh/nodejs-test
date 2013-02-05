@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  script
+    var professions = !{bootstrap}
+
+  h1= title
+  table#realms.table.table-hover
+    thead
+      tr
+        th Name
+        th(colspan='2')
+    tbody
+    - each profession in professions
+      tr
+        td: a(href='/admin/profession/' + profession._id)!= profession.name
+        td
+          form(method='GET', action='/admin/profession/' + profession._id)
+            button(type='submit', class='btn btn-warning') Edit
+        td
+          form(method='POST', action='/admin/profession/' + profession._id)
+            input(type='hidden', name='_method', value='DELETE')
+            input(type='hidden', name='_id', value='' + profession._id + '')
+            button(type='submit', class='btn btn-danger') Delete
+
+  a(href='/admin/profession', class='btn btn-primary') Create new
