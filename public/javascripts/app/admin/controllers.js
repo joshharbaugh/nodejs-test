@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-app.controller('AppCtrl', ['$scope','$element', function($scope, $element) {
+app.controller('AppCtrl', ['$scope','$element','$http', function($scope, $element, $http) {
 
 	try {
 		
@@ -14,21 +14,36 @@ app.controller('AppCtrl', ['$scope','$element', function($scope, $element) {
 
 	$scope.addItem = function() {
 
-		var itemId  = $scope.itemId  = $('#itemId')[0].value;
-		var itemQty = $scope.itemQty = $('#itemQty')[0].value;
-		var itemGlobalCost = $scope.itemGlobalCost = $('#itemGlobalCost')[0].value;
+		var itemId  = $('#itemId')[0].value;
+		var itemQty = $('#itemQty')[0].value;
 
-		items.push({"_id":itemId, "qty":itemQty, "globalCost":itemGlobalCost});
+		$http.post('/admin/profession/' + profession._id, {"_id":itemId, "qty":itemQty}).success(function(data) {
+			items.push({"_id":data._id, "qty":data.qty, "globalCost":data.globalCost});
+			$('#itemId')[0].value = '';
+			$('#itemQty')[0].value = '';
+		});
 
 	}
 
-	$scope.removeItem = function(id) {
+	$scope.editItem = function(item) {
+
+		console.log('editing', item);
+
+	}
+
+	$scope.removeItem = function(item) {
+
+		console.log(item, typeof item);
 
 		for(var key in items) {
 			if(items.hasOwnProperty(key)) {
-				if(id === items[key]._id) {
+				if(item._id === items[key]._id) {
 					var index = items.indexOf(items[key]);
-					items.splice(index, 1);
+					$http.delete('/admin/profession/' + profession._id + '/deleteItem', {method: 'DELETE', data: item}).success(function(data) {
+						if(data == "success") items.splice(index, 1); console.log(item._id + ' removed successfully!');
+					}).error(function(data) {
+						alert('Unable to remove item. Please try again.');
+					});
 				}
 			}
 		}

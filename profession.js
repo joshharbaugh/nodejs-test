@@ -1,6 +1,7 @@
 var ProfessionProvider = require('./professionprovider-mongodb').ProfessionProvider
   , request = require('request')
-  , armory = require('armory');
+  , armory = require('armory')
+  , wowhead = require('wowhead');
 
 var ProfessionProvider = new ProfessionProvider('localhost', 27017);
 
@@ -39,6 +40,31 @@ exports.update = function(req, res) {
 		if ( err ) throw err;
 		res.redirect('/admin/professions');	
 	});
+}
+
+exports.addItem = function(req, res) {
+	var b = req.body;
+	b._id = parseInt(req.body._id);
+	b.qty = parseInt(req.body.qty);
+
+	wowhead(b._id, function(err, response) {
+		b.globalCost = response.avgbuyout || response.buyprice || 0;
+
+		ProfessionProvider.updateItems(req.params.id, b, function(err, resp) {
+			if ( err ) throw err;
+			res.json(resp);	
+			//res.redirect('/admin/profession/' + req.params.id);
+		});
+	});
+}
+
+exports.deleteItem = function(req, res) {
+	var b = req.body;
+
+	ProfessionProvider.deleteItem(req.params.id, b, function(err, resp) {
+		if ( err ) throw err;
+		res.send(resp);
+	})
 }
 
 exports.delete = function(req, res) {

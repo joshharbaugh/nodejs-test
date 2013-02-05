@@ -1,8 +1,9 @@
-var Db = require('mongodb').Db;
-var Connection = require('mongodb').Connection;
-var Server = require('mongodb').Server;
-var BSON = require('mongodb').BSON;
-var ObjectID = require('mongodb').ObjectID;
+var Db = require('mongodb').Db,
+    Connection = require('mongodb').Connection,
+    Server = require('mongodb').Server,
+    BSON = require('mongodb').BSON,
+    ObjectID = require('mongodb').ObjectID,
+    WowHead = require('wowhead');
 
 ProfessionProvider =  function(host, port) {
   this.db= new Db('test', new Server(host, port, {auto_reconnect: true}, {}), {safe: true});
@@ -73,8 +74,7 @@ ProfessionProvider.prototype.update = function(id, payload, callback) {
 
       payload.modified_at = new Date().toUTCString();
 
-      //professions_collection.update({_id: id}, {$push: {"items": payload} }, { upsert: true }, function() {
-      professions_collection.update({_id: id}, payload, { upsert: true }, function() {
+      professions_collection.update({_id: id}, {$set: {"name": payload.name} }, { upsert: true }, function() {
         callback(null, "success");
       });
     }
@@ -96,9 +96,11 @@ ProfessionProvider.prototype.updateItems = function(id, payload, callback) {
   this.getCollection(function(error, professions_collection) {
     if( error ) callback(error)
     else {
+
       professions_collection.update({_id: id}, {$push: {"items": payload} }, { upsert: true }, function() {
-        callback(null, "success");
+        callback(null, payload);
       });
+    
     }
   });
 };

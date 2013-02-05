@@ -9,8 +9,8 @@ block content
     li.active
       a(href='/admin') Dashboard
     li.dropdown
-      a.dropdown-toggle(href='#', data-toggle='dropdown') Manage
+      a.dropdown-toggle(href='#', data-toggle='dropdown') Professions
         b.caret
       ul.dropdown-menu
         each profession in professions
-          li: a(href='/admin/edit/' + profession._id)!= profession.name 
+          li: a(href='/admin/profession/' + profession._id)!= profession.name 

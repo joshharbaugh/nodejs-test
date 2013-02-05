@@ -46,8 +46,10 @@ app.get('/admin/professions', profession.index);
 app.get('/admin/profession', profession.show);
 app.post('/admin/profession', profession.create);
 app.get('/admin/profession/:id', profession.read);
+app.post('/admin/profession/:id', profession.addItem);
 app.put('/admin/profession/:id', profession.update);
 app.delete('/admin/profession/:id', profession.delete);
+app.delete('/admin/profession/:id/deleteItem', profession.deleteItem);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

@@ -4,6 +4,15 @@ block content
   script
     var profession = !{bootstrap}
 
+  ul.breadcrumb
+    li
+      a(href='/admin') Home
+      span.divider /
+    li
+      a(href='/admin/professions') Professions
+      span.divider /
+    li.active= profession._id
+
   ul.nav.nav-pills
     li.active
       a(href='#detail-pane', data-toggle='tab') Details
@@ -29,19 +38,20 @@ block content
     div.pill-pane#items-pane
       legend Items
       table.table
-      thead
-        th Item #
-        th Quantity
-        th Global Cost
-        th
-      tbody  
-        tr(ng-repeat='item in profession.items')
-          td {{ item._id }}
-          td {{ item.qty }}
-          td {{ item.globalCost }}
-          td: button(type='button', class='btn btn-danger', ng-click='removeItem(item._id)') Remove
+        thead
+          th Name
+          th Quantity
+          th Global Cost
+          th(colspan='2')
+        tbody  
+          tr(ng-repeat='item in profession.items')
+            td: a(href='#', rel='item={{ item._id }}') {{ item._id }}
+            td {{ item.qty }}
+            td {{ item.globalCost }}
+            td: button(type='button', class='btn btn-warning', ng-click='editItem(item)') Edit
+            td: button(type='button', class='btn btn-danger', ng-click='removeItem(item)') Remove
 
-      form
+      form(ng-submit='addItem()')
         fieldset
           legend Add item
             
@@ -51,8 +61,5 @@ block content
           label Quantity
           input(type='text', name='qty', id='itemQty')
           
-          label Global Cost
-          input(type='text', name='globalCost', id='itemGlobalCost')
-          
         div.form-actions
-          button(type='button', class='btn', ng-click='addItem()') Add
+          button(type='submit', class='btn btn-primary') Add

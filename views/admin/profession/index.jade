@@ -4,7 +4,12 @@ block content
   script
     var professions = !{bootstrap}
 
-  h1= title
+  ul.breadcrumb
+    li
+      a(href='/admin') Home
+      span.divider /
+    li.active Professions
+
   table#realms.table.table-hover
     thead
       tr
