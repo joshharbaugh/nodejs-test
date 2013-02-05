@@ -1,0 +1,59 @@
+extends layout
+
+block content
+  script
+    var realm        = !{document}
+    var professions  = !{professions}
+    var filter = !{filter}
+
+  p 
+    a(href='/') Return to list
+  h2.page-header= title
+    small.pull-right= realm.battlegroup
+
+  ul.nav.nav-pills
+    li.active
+      a(href='#professions', data-toggle='tab') Professions
+    li
+      a(href='#profession-items', data-toggle='tab') Profession Items
+  
+  div.well= filter
+  
+  div.pill-content
+    div.pill-pane.active#professions
+      table.table.table-hover
+        thead
+          tr
+            th(width='30%')
+            th(width='30%') Alliance Cost
+            th(width='30%') Horde Cost
+        tbody
+          tr(ng-repeat='(i, profession) in professions')
+            td(width='30%') 
+              h3 {{ i }}
+            td(width='30%')
+              p.cost {{ profession.alliance.cost }}
+            td(width='30%')
+              p.cost {{ profession.horde.cost }}
+    div.pill-pane#profession-items
+      table.table.table-hover
+        thead
+          tr
+            th(width='30%')
+            th(width='30%') Alliance Cost
+            th(width='30%') Horde Cost
+        tbody
+          tr(ng-repeat='(i, profession) in professions')
+            td(width='30%') 
+              h3 {{ i }}
+            td(width='30%')
+              ul
+                li.pull-left(ng-repeat='item in profession.alliance.items')
+                  span.span3.label.label-info {{ item.name }}
+                  span.span2.label.muted(ng-show='item.realmCost != 0') {{ item.realmCost }}
+                  span.span2.label.muted(ng-hide='item.realmCost != 0') {{ item.globalCost }}
+            td(width='30%')
+              ul
+                li.pull-left(ng-repeat='item in profession.horde.items')
+                  span.span3.label.label-info {{ item.name }}
+                  span.span2.label.muted {{ item.realmCost }}

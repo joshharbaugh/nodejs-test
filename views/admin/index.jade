@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  ul.breadcrumb
+    li
+      a(href='/admin') Home 
+
+  ul.nav.nav-pills
+    li.active
+      a(href='/admin') Dashboard
+    li.dropdown
+      a.dropdown-toggle(href='#', data-toggle='dropdown') Manage
+        b.caret
+      ul.dropdown-menu
+        each profession in professions
+          li: a(href='/admin/edit/' + profession._id)!= profession.name 
