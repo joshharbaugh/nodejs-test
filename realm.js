@@ -80,3 +80,26 @@ exports.read = function(req, res) {
     });
 
 }
+
+exports.addItem = function(req, res) {
+	var b = req.body;
+
+	RealmProvider.addItem(req.params.id, b, function(err, resp) {
+		if ( err ) throw err;
+		else {
+			console.log('The raw response from Mongo was ', resp);
+			res.json(resp);
+		}
+	});
+}
+
+exports.deleteItem = function(req, res) {
+	var b = req.body;
+
+	console.log('req.body', b);
+
+	RealmProvider.deleteItem(req.params.id, b, function(err, resp) {
+		if ( err ) throw err;
+		res.send(resp);
+	})
+}

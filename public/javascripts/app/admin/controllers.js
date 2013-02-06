@@ -21,6 +21,11 @@ app.controller('AppCtrl', ['$scope','$element','$http', function($scope, $elemen
 			items.push({"_id":data._id, "qty":data.qty, "globalCost":data.globalCost});
 			$('#itemId')[0].value = '';
 			$('#itemQty')[0].value = '';
+
+			$http.post('/admin/realms/' + profession._id, {"_id":data._id, "qty":data.qty, "globalCost":data.globalCost}).success(function(data) {
+				console.log('response', data);
+			});
+
 		});
 
 	}
@@ -41,6 +46,11 @@ app.controller('AppCtrl', ['$scope','$element','$http', function($scope, $elemen
 					var index = items.indexOf(items[key]);
 					$http.delete('/admin/profession/' + profession._id + '/deleteItem', {method: 'DELETE', data: item}).success(function(data) {
 						if(data == "success") items.splice(index, 1); console.log(item._id + ' removed successfully!');
+
+						$http.delete('/admin/realms/' + profession._id + '/deleteItem', {method: 'DELETE', data: item}).success(function(data) {
+							console.log('response', data);
+						});
+
 					}).error(function(data) {
 						alert('Unable to remove item. Please try again.');
 					});

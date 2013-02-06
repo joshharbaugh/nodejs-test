@@ -52,18 +52,7 @@ exports.addItem = function(req, res) {
 
 		ProfessionProvider.updateItems(req.params.id, b, function(err, resp) {
 			if ( err ) throw err;
-
-			var pushTo = 'professionCost.' + req.params.id + '.items';
-			res.app.db.models.Realm.update({}, { $push: { pushTo: b } }, { upsert: true, multi: true }, function (err, numberAffected, raw) {
-				if ( err ) throw err;
-				else {
-					console.log('The number of updated documents was %d', numberAffected);
-					console.log('The raw response from Mongo was ', raw);
-					res.json(resp);
-				}
-			});
-
-			//res.redirect('/admin/profession/' + req.params.id);
+			res.json(resp);
 		});
 	});
 }

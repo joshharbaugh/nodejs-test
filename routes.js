@@ -13,6 +13,8 @@ exports = module.exports = function(app, realm, admin, profession) {
 
 	// BACK-END ROUTES
 	app.get('/admin', admin.index);
+	app.post('/admin/realms/:id', realm.addItem);
+	app.delete('/admin/realms/:id/deleteItem', realm.deleteItem);
 
 	// PROFESSIONS ADMIN
 	app.get('/admin/professions', profession.index);
