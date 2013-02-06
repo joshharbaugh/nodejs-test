@@ -1,5 +1,6 @@
 var RealmProvider = require('./realmprovider-mongodb').RealmProvider
   , request = require('request');
+
 var RealmProvider = new RealmProvider('localhost', 27017);
 
 exports.index = function(req, res) {
@@ -43,9 +44,39 @@ exports.create = function(req, res) {
 }
 
 exports.read = function(req, res) {
-	RealmProvider.findById(req.params.id, function(error, realm) {
-		if( error ) res.send(500, error);
-		console.log('[REALM: ' + realm.name + ']\n\n');
-		res.render('realm_show', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}), professions:JSON.stringify(realm.professions) });
-	});
+
+	res.app.db.models.Realm.findOne({_id: req.params.id}).exec(function(err, realm) {
+		if( err ) res.send(500, err);
+        else {
+
+        	try {
+
+        		res.app.db.models.Professions.find().exec(function(err, professions) {
+
+        			if (err) throw err;
+
+        			for (var obj in professions) {
+
+        				if(professions.hasOwnProperty(obj)) {
+
+		        			realm.professions.push(professions[obj]);
+		        		
+		        		}
+
+	        		}
+
+	        		console.log('[REALM: ' + realm.name + ']\n\n');
+	        		res.render('realm_show', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}), professions:JSON.stringify(realm.professions), professionCost:JSON.stringify(realm.professionCost) });
+
+        		});
+
+	        } catch(e) {
+
+	        	console.log('Exception: ' + e);
+
+	        }
+
+        }
+    });
+
 }

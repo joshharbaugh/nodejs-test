@@ -3,9 +3,20 @@ var express = require('express')
   , path    = require('path')
   , realm   = require('./realm')
   , profession = require('./profession')
-  , admin   = require('./admin');
+  , admin   = require('./admin')
+  , mongoose = require('mongoose');
 
 var app = express();
+
+app.set('mongodb-uri', process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost/test');
+
+app.db = mongoose.createConnection(app.get('mongodb-uri'));
+
+app.db.once('open', function() {
+  console.log('Mongoose open for business');
+});
+
+require('./models')(app, mongoose);
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
@@ -29,27 +40,7 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-// SETTING CONTENT-TYPE FOR ALL RESPONSES TO APPLICATION/JSON
-// app.get('/*', function(req, res, next) { res.contentType('application/json'); next(); });
-// app.post('/*', function(req, res, next) { res.contentType('application/json'); next(); });
-// app.put('/*', function(req, res, next) { res.contentType('application/json'); next(); });
-// app.delete('/*', function(req, res, next) { res.contentType('application/json'); next(); });
-
-// FRONT-END ROUTES
-app.get('/', realm.index);
-app.get('/realm/:id', realm.read);
-app.get('/realms', realm.list);
-
-// BACK-END ROUTES
-app.get('/admin', admin.index);
-app.get('/admin/professions', profession.index);
-app.get('/admin/profession', profession.show);
-app.post('/admin/profession', profession.create);
-app.get('/admin/profession/:id', profession.read);
-app.post('/admin/profession/:id', profession.addItem);
-app.put('/admin/profession/:id', profession.update);
-app.delete('/admin/profession/:id', profession.delete);
-app.delete('/admin/profession/:id/deleteItem', profession.deleteItem);
+require('./routes')(app, realm, admin, profession);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

@@ -1,8 +1,8 @@
-var Db = require('mongodb').Db;
-var Connection = require('mongodb').Connection;
-var Server = require('mongodb').Server;
-var BSON = require('mongodb').BSON;
-var ObjectID = require('mongodb').ObjectID;
+var Db = require('mongodb').Db
+  , Connection = require('mongodb').Connection
+  , Server = require('mongodb').Server
+  , BSON = require('mongodb').BSON
+  , ObjectID = require('mongodb').ObjectID;
 
 RealmProvider =  function(host, port) {
   this.db= new Db('test', new Server(host, port, {auto_reconnect: true}, {}), {safe: true});
@@ -49,372 +49,63 @@ RealmProvider.prototype.save = function(realms, callback) {
 
       for( var i =0;i< realms.length;i++ ) {
         realm = realms[i];
-        realm._id = realm.slug;
-        realm.created_at = new Date();
-        //db.realms.find({}, {_id:0, "professions.alchemy.alliance.cost":1})
-        realm.professions =
-        {
+        realm.created_at = new Date().toUTCString();
+        realm.professionCost = {
           "alchemy": {
-            "alliance": {
-              "cost": "3000 gold",
-              "items": [
-                {
-                  "id": 765,
-                  "qty": 59,
-                  "name": "Silverleaf",
-                  "realmCost": 500,
-                  "globalCost": 100
-                },
-                {
-                  "id": 785,
-                  "qty": 20,
-                  "name": "Mageroyal",
-                  "realmCost": 500,
-                  "globalCost": 100
-                },
-                {
-                  "id": 2447,
-                  "qty": 59,
-                  "name": "Peacebloom",
-                  "realmCost": 500,
-                  "globalCost": 100
-                },
-                {
-                  "id": 2450,
-                  "qty": 93,
-                  "name": "Briarthorn",
-                  "realmCost": 1500,
-                  "globalCost": 350
-                }
-              ]
-            },
-            "horde": {
-              "cost": "2345 gold",
-              "items": [
-                {
-                  "id": 765,
-                  "qty": 59,
-                  "name": "Silverleaf",
-                  "realmCost": 500,
-                  "globalCost": 100
-                },
-                {
-                  "id": 785,
-                  "qty": 20,
-                  "name": "Mageroyal",
-                  "realmCost": 500,
-                  "globalCost": 100
-                },
-                {
-                  "id": 2447,
-                  "qty": 59,
-                  "name": "Peacebloom",
-                  "realmCost": 500,
-                  "globalCost": 100
-                },
-                {
-                  "id": 2450,
-                  "qty": 93,
-                  "name": "Briarthorn",
-                  "realmCost": 1500,
-                  "globalCost": 350
-                }
-              ]
-            }
-          }, 
+            "_id": "alchemy",
+            "alliance": 3000,
+            "horde": 2500,
+            "items": [{ "_id" : 765, "available": 0, "realmCost" : 2140 }, { "_id" : 2450, "available": 0, "realmCost" : 10877 }, { "_id" : 2453, "available" : 0, "realmCost" : 8336 }, { "_id" : 785, "available" : 20, "realmCost" : 6767 }, { "_id" : 3820, "available" : 45, "realmCost" : 12000 }, { "_id" : 2447, "available" : 59, "realmCost" : 2557 }, { "_id" : 3357, "available" : 20, "realmCost" : 9900 }, { "_id" : 3821, "available" : 55, "realmCost" : 44214 }, { "_id" : 8838, "available" : 55, "realmCost" : 11756 }, { "_id" : 8839, "available" : 15, "realmCost" : 19550 }, { "_id" : 13463, "available" : 15, "realmCost" : 9287 }, { "_id" : 13465, "available" : 18, "realmCost" : 12798 }, { "_id" : 22789, "available" : 10, "realmCost" : 23013 }, { "_id" : 22791, "available" : 10, "realmCost" : 33500 }, { "_id" : 40199, "available" : 5, "realmCost" : 3463 }, { "_id" : 36904, "available" : 30, "realmCost" : 8927 }, { "_id" : 36906, "available" : 20, "realmCost" : 12352 }, { "_id" : 52983, "available" : 69, "realmCost" : 25046 }, { "_id" : 52985, "available" : 39, "realmCost" : 62142 }, { "_id" : 52329, "available" : 5, "realmCost" : 70814 }, { "_id" : 52988, "available" : 23, "realmCost" : 39752 }, { "_id" : 52179, "available" : 15, "realmCost" : 119497 }, { "_id" : 3356, "available" : 30, "realmCost" : 9413 }, { "_id" : 3358, "available" : 25, "realmCost" : 8160 }, { "_id" : 13466, "available" : 30, "realmCost" : 12450 }, { "_id" : 13464, "available" : 45, "realmCost" : 8678 }, { "_id" : 22785, "available" : 50, "realmCost" : 16475 }, { "_id" : 52181, "available" : 3, "realmCost" : 209500 }, { "_id" : 22786, "available" : 35, "realmCost" : 15231 }, { "_id" : 36907, "available" : 20, "realmCost" : 13600 }, { "_id" : 36901, "available" : 75, "realmCost" : 11133 }, { "_id" : 36903, "available" : 25, "realmCost" : 11277 }, { "_id" : 36905, "available" : 40, "realmCost" : 14175 }, { "_id" : 52984, "available" : 18, "realmCost" : 28571 }, { "_id" : 52986, "available" : 34, "realmCost" : 53755 }, { "_id" : 52987, "available" : 32, "realmCost" : 61577 }, { "_id" : 52178, "available" : 15, "realmCost" : 164937 }]
+          },
+          "blacksmithing": {
+            "_id": "blacksmithing",
+            "alliance": 3000,
+            "horde": 2500,
+            "items": []
+          },
           "cooking": {
-            "alliance": {
-              "cost": "123 gold",
-              "items": [
-                {
-                  "id": 30817,
-                  "qty": 60,
-                  "name": "Simple Flour",
-                  "realmCost": 500,
-                  "globalCost": 10478
-                },
-                {
-                  "id": 3173,
-                  "qty": 40,
-                  "name": "Bear Meat",
-                  "realmCost": 500,
-                  "globalCost": 3764
-                },
-                {
-                  "id": 3685,
-                  "qty": 50,
-                  "name": "Raptor Egg",
-                  "realmCost": 500,
-                  "globalCost": 750
-                },
-                {
-                  "id": 12207,
-                  "qty": 25,
-                  "name": "Giant Egg",
-                  "realmCost": 500,
-                  "globalCost": 8375
-                },
-                {
-                  "id": 20424,
-                  "qty": 15,
-                  "name": "Sandworm Meat",
-                  "realmCost": 500,
-                  "globalCost": 9375
-                },
-                {
-                  "id": 27682,
-                  "qty": 35,
-                  "name": "Talbuk Venison",
-                  "realmCost": 500,
-                  "globalCost": 3450
-                },
-                {
-                  "id": 43012,
-                  "qty": 35,
-                  "name": "Rhino Meat",
-                  "realmCost": 500,
-                  "globalCost": 12997
-                },
-                {
-                  "id": 2596,
-                  "qty": 30,
-                  "name": "Dwarven Stout",
-                  "realmCost": 500,
-                  "globalCost": 41000
-                },
-                {
-                  "id": 62778,
-                  "qty": 20,
-                  "name": "Toughened Flesh",
-                  "realmCost": 500,
-                  "globalCost": 17307
-                },
-                {
-                  "id": 53064,
-                  "qty": 25,
-                  "name": "Highland Guppy",
-                  "realmCost": 500,
-                  "globalCost": 74899
-                },
-                {
-                  "id": 2678,
-                  "qty": 60,
-                  "name": "Mild Spices",
-                  "realmCost": 500,
-                  "globalCost": 10100
-                },
-                {
-                  "id": 2675,
-                  "qty": 50,
-                  "name": "Crawler Claw",
-                  "realmCost": 500,
-                  "globalCost": 4599
-                },
-                {
-                  "id": 12184,
-                  "qty": 50,
-                  "name": "Raptor Flesh",
-                  "realmCost": 500,
-                  "globalCost": 3700
-                },
-                {
-                  "id": 35562,
-                  "qty": 40,
-                  "name": "Bear Flank",
-                  "realmCost": 500,
-                  "globalCost": 17053
-                },
-                {
-                  "id": 27674,
-                  "qty": 30,
-                  "name": "Ravager Flesh",
-                  "realmCost": 500,
-                  "globalCost": 4049
-                },
-                {
-                  "id": 43013,
-                  "qty": 50,
-                  "name": "Chilled Meat",
-                  "realmCost": 500,
-                  "globalCost": 2934
-                },
-                {
-                  "id": 43007,
-                  "qty": 15,
-                  "name": "Northern Spices",
-                  "realmCost": 500,
-                  "globalCost": 4151
-                },
-                {
-                  "id": 2595,
-                  "qty": 15,
-                  "name": "Jug of Bourbon",
-                  "realmCost": 500,
-                  "globalCost": 38415
-                },
-                {
-                  "id": 53067,
-                  "qty": 25,
-                  "name": "Striped Lurker",
-                  "realmCost": 500,
-                  "globalCost": 23200
-                },
-                {
-                  "id": 53072,
-                  "qty": 25,
-                  "name": "Deepsea Sagefish",
-                  "realmCost": 500,
-                  "globalCost": 43065
-                }
-              ]
-            },
-            "horde": {
-              "cost": "345 gold",
-              "items": [
-                {
-                  "id": 30817,
-                  "qty": 60,
-                  "name": "Simple Flour",
-                  "realmCost": 500,
-                  "globalCost": 10478
-                },
-                {
-                  "id": 3173,
-                  "qty": 40,
-                  "name": "Bear Meat",
-                  "realmCost": 500,
-                  "globalCost": 3764
-                },
-                {
-                  "id": 3685,
-                  "qty": 50,
-                  "name": "Raptor Egg",
-                  "realmCost": 500,
-                  "globalCost": 750
-                },
-                {
-                  "id": 12207,
-                  "qty": 25,
-                  "name": "Giant Egg",
-                  "realmCost": 500,
-                  "globalCost": 8375
-                },
-                {
-                  "id": 20424,
-                  "qty": 15,
-                  "name": "Sandworm Meat",
-                  "realmCost": 500,
-                  "globalCost": 9375
-                },
-                {
-                  "id": 27682,
-                  "qty": 35,
-                  "name": "Talbuk Venison",
-                  "realmCost": 500,
-                  "globalCost": 3450
-                },
-                {
-                  "id": 43012,
-                  "qty": 35,
-                  "name": "Rhino Meat",
-                  "realmCost": 500,
-                  "globalCost": 12997
-                },
-                {
-                  "id": 2596,
-                  "qty": 30,
-                  "name": "Dwarven Stout",
-                  "realmCost": 500,
-                  "globalCost": 41000
-                },
-                {
-                  "id": 62778,
-                  "qty": 20,
-                  "name": "Toughened Flesh",
-                  "realmCost": 500,
-                  "globalCost": 17307
-                },
-                {
-                  "id": 53064,
-                  "qty": 25,
-                  "name": "Highland Guppy",
-                  "realmCost": 500,
-                  "globalCost": 74899
-                },
-                {
-                  "id": 2678,
-                  "qty": 60,
-                  "name": "Mild Spices",
-                  "realmCost": 500,
-                  "globalCost": 10100
-                },
-                {
-                  "id": 2675,
-                  "qty": 50,
-                  "name": "Crawler Claw",
-                  "realmCost": 500,
-                  "globalCost": 4599
-                },
-                {
-                  "id": 12184,
-                  "qty": 50,
-                  "name": "Raptor Flesh",
-                  "realmCost": 500,
-                  "globalCost": 3700
-                },
-                {
-                  "id": 35562,
-                  "qty": 40,
-                  "name": "Bear Flank",
-                  "realmCost": 500,
-                  "globalCost": 17053
-                },
-                {
-                  "id": 27674,
-                  "qty": 30,
-                  "name": "Ravager Flesh",
-                  "realmCost": 500,
-                  "globalCost": 4049
-                },
-                {
-                  "id": 43013,
-                  "qty": 50,
-                  "name": "Chilled Meat",
-                  "realmCost": 500,
-                  "globalCost": 2934
-                },
-                {
-                  "id": 43007,
-                  "qty": 15,
-                  "name": "Northern Spices",
-                  "realmCost": 500,
-                  "globalCost": 4151
-                },
-                {
-                  "id": 2595,
-                  "qty": 15,
-                  "name": "Jug of Bourbon",
-                  "realmCost": 500,
-                  "globalCost": 38415
-                },
-                {
-                  "id": 53067,
-                  "qty": 25,
-                  "name": "Striped Lurker",
-                  "realmCost": 500,
-                  "globalCost": 23200
-                },
-                {
-                  "id": 53072,
-                  "qty": 25,
-                  "name": "Deepsea Sagefish",
-                  "realmCost": 500,
-                  "globalCost": 43065
-                }
-              ]
-            }
+            "_id": "cooking",
+            "alliance": 3000,
+            "horde": 2500,
+            "items": []
+          },
+          "enchanting": {
+            "_id": "enchanting",
+            "alliance": 3000,
+            "horde": 2500,
+            "items": []
+          },
+          "engineering": {
+            "_id": "engineering",
+            "alliance": 3000,
+            "horde": 2500,
+            "items": []
+          },
+          "inscription": {
+            "_id": "inscription",
+            "alliance": 3000,
+            "horde": 2500,
+            "items": []
+          },
+          "jewelcrafting": {
+            "_id": "jewelcrafting",
+            "alliance": 3000,
+            "horde": 2500,
+            "items": []
+          },
+          "leatherworking": {
+            "_id": "leatherworking",
+            "alliance": 3000,
+            "horde": 2500,
+            "items": []
+          },
+          "tailoring": {
+            "_id": "tailoring",
+            "alliance": 3000,
+            "horde": 2500,
+            "items": []
           }
-        };
+        }
       }
 
       realms_collection.update({_id: realm.slug}, realm, { upsert: true }, function() {        

@@ -4,6 +4,7 @@ block content
   script
     var realm        = !{document}
     var professions  = !{professions}
+    var professionCost = !{professionCost}
 
   p 
     a(href='/') Return to list
@@ -25,13 +26,13 @@ block content
             th(width='30%') Alliance Cost
             th(width='30%') Horde Cost
         tbody
-          tr(ng-repeat='(i, profession) in professions')
+          tr(ng-repeat='(i, profession) in professionCost')
             td(width='30%') 
               h3 {{ i }}
             td(width='30%')
-              p.cost {{ profession.alliance.cost }}
+              p.cost {{ profession.alliance }}
             td(width='30%')
-              p.cost {{ profession.horde.cost }}
+              p.cost {{ profession.horde }}
     div.pill-pane#profession-items
       table.table.table-hover
         thead
@@ -40,17 +41,16 @@ block content
             th(width='30%') Alliance Cost
             th(width='30%') Horde Cost
         tbody
-          tr(ng-repeat='(i, profession) in professions')
+          tr(ng-repeat='(i, profession) in professionCost')
             td(width='30%') 
               h3 {{ i }}
             td(width='30%')
               ul
-                li.pull-left(ng-repeat='item in profession.alliance.items')
-                  span.span3.label.label-info {{ item.name }}
-                  span.span2.label.muted(ng-show='item.realmCost != 0') {{ item.realmCost }}
-                  span.span2.label.muted(ng-hide='item.realmCost != 0') {{ item.globalCost }}
+                li.pull-left(ng-repeat='item in profession.items')
+                  span.span3.label.label-info: a(href='#', rel='item={{item._id}}', style='color: #fff;') {{ item._id }}
+                  span.span2.label.muted {{ item.realmCost }}
             td(width='30%')
               ul
-                li.pull-left(ng-repeat='item in profession.horde.items')
-                  span.span3.label.label-info {{ item.name }}
+                li.pull-left(ng-repeat='item in profession.items')
+                  span.span3.label.label-info: a(href='#', rel='item={{item._id}}', style='color: #fff;') {{ item._id }}
                   span.span2.label.muted {{ item.realmCost }}
