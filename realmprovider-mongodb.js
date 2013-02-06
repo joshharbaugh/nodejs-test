@@ -64,14 +64,6 @@ RealmProvider.prototype.deleteItem = function(profession, item, callback) {
       console.log(profession + '\n');
       console.log(item);
 
-      console.log(item._id, item.available, item.realmCost);
-
-      for(var key in item) {
-        if(item.hasOwnProperty(key)) {
-          console.log(item[key] + '\n');
-        }
-      }
-
       realms_collection.update({ "professionCost._id": profession, "professionCost.items._id": item._id }, { $unset: { "professionCost.items.$": "" } }, function(error, result) {
         if( error ) callback(error)
         else callback(null, "success")
