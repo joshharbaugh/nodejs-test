@@ -1,33 +1,9 @@
-"alchemy": {
-	"item": []
-},
-"blacksmithing": {
-	"item": []
-},
-"cooking": {
-	"item": []
-},
-"enchanting": {
-	"item": []
-},
-"engineering": {
-	"item": []
-},
-"herbalism": {
-	"item": []
-},
-"inscription": {
-	"item": []
-},
-"jewelcrafting": {
-	"item": []
-},
-"mining": {
-	"item": []
-},
-"skinning": {
-	"item": []
-},
-"tailoring": {
-	"item": []
-}
+{ "_id" : "alchemy", "created_at" : "Tue, 05 Feb 2013 19:16:17 GMT", "items" : [ { "_id" : 765, "qty" : 59, "globalCost" : 2140 }, { "_id" : 2450, "qty" : 93, "globalCost" : 10877 }, { "_id" : 2453, "qty" : 33, "globalCost" : 8336 }, { "_id" : 785, "qty" : 20, "globalCost" : 6767 }, { "_id" : 3820, "qty" : 45, "globalCost" : 12000 }, { "_id" : 2447, "qty" : 59, "globalCost" : 2557 }, { "_id" : 3357, "qty" : 20, "globalCost" : 9900 }, { "_id" : 3821, "qty" : 55, "globalCost" : 44214 }, { "_id" : 8838, "qty" : 55, "globalCost" : 11756 }, { "_id" : 8839, "qty" : 15, "globalCost" : 19550 }, { "_id" : 13463, "qty" : 15, "globalCost" : 9287 }, { "_id" : 13465, "qty" : 18, "globalCost" : 12798 }, { "_id" : 22789, "qty" : 10, "globalCost" : 23013 }, { "_id" : 22791, "qty" : 10, "globalCost" : 33500 }, { "_id" : 40199, "qty" : 5, "globalCost" : 3463 }, { "_id" : 36904, "qty" : 30, "globalCost" : 8927 }, { "_id" : 36906, "qty" : 20, "globalCost" : 12352 }, { "_id" : 52983, "qty" : 69, "globalCost" : 25046 }, { "_id" : 52985, "qty" : 39, "globalCost" : 62142 }, { "_id" : 52329, "qty" : 5, "globalCost" : 70814 }, { "_id" : 52988, "qty" : 23, "globalCost" : 39752 }, { "_id" : 52179, "qty" : 15, "globalCost" : 119497 }, { "_id" : 3356, "qty" : 30, "globalCost" : 9413 }, { "_id" : 3358, "qty" : 25, "globalCost" : 8160 }, { "_id" : 13466, "qty" : 30, "globalCost" : 12450 }, { "_id" : 13464, "qty" : 45, "globalCost" : 8678 }, { "_id" : 22785, "qty" : 50, "globalCost" : 16475 }, { "_id" : 52181, "qty" : 3, "globalCost" : 209500 }, { "_id" : 22786, "qty" : 35, "globalCost" : 15231 }, { "_id" : 36907, "qty" : 20, "globalCost" : 13600 }, { "_id" : 36901, "qty" : 75, "globalCost" : 11133 }, { "_id" : 36903, "qty" : 25, "globalCost" : 11277 }, { "_id" : 36905, "qty" : 40, "globalCost" : 14175 }, { "_id" : 52984, "qty" : 18, "globalCost" : 28571 }, { "_id" : 52986, "qty" : 34, "globalCost" : 53755 }, { "_id" : 52987, "qty" : 32, "globalCost" : 61577 }, { "_id" : 52178, "qty" : 15, "globalCost" : 164937 } ], "name" : "Alchemy" }
+{ "_id" : "blacksmithing", "name" : "Blacksmithing", "items" : [], "created_at" : "Tue, 05 Feb 2013 19:16:44 GMT" }
+{ "_id" : "cooking", "name" : "Cooking", "items" : [], "created_at" : "Tue, 05 Feb 2013 19:16:33 GMT" }
+{ "_id" : "enchanting", "name" : "Enchanting", "items" : [], "created_at" : "Tue, 05 Feb 2013 23:02:09 GMT" }
+{ "_id" : "engineering", "name" : "Engineering", "items" : [], "created_at" : "Tue, 05 Feb 2013 23:02:16 GMT" }
+{ "_id" : "inscription", "name" : "Inscription", "items" : [], "created_at" : "Tue, 05 Feb 2013 23:03:06 GMT" }
+{ "_id" : "jewelcrafting", "name" : "Jewelcrafting", "items" : [], "created_at" : "Tue, 05 Feb 2013 23:02:01 GMT" }
+{ "_id" : "leatherworking", "name" : "Leatherworking", "items" : [], "created_at" : "Tue, 05 Feb 2013 23:01:50 GMT" }
+{ "_id" : "tailoring", "name" : "Tailoring", "items" : [], "created_at" : "Tue, 05 Feb 2013 23:01:38 GMT" }
