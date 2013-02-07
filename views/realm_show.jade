@@ -28,29 +28,25 @@ block content
         tbody
           tr(ng-repeat='(i, profession) in professionCost')
             td(width='30%') 
-              h3 {{ i }}
+              h3 {{ profession._id }}
             td(width='30%')
-              p.cost {{ profession.alliance }}
+              p.cost: span.priceTag {{ profession.alliance }}
             td(width='30%')
-              p.cost {{ profession.horde }}
+              p.cost: span.priceTag {{ profession.horde }}
     div.pill-pane#profession-items
-      table.table.table-hover
-        thead
-          tr
-            th(width='30%')
-            th(width='30%') Alliance Cost
-            th(width='30%') Horde Cost
-        tbody
-          tr(ng-repeat='(i, profession) in professionCost')
-            td(width='30%') 
-              h3 {{ i }}
-            td(width='30%')
-              ul
-                li.pull-left(ng-repeat='item in profession.items')
-                  span.span3.label.label-info: a(href='#', rel='item={{item._id}}', style='color: #fff;') {{ item._id }}
-                  span.span2.label.muted {{ item.realmCost }}
-            td(width='30%')
-              ul
-                li.pull-left(ng-repeat='item in profession.items')
-                  span.span3.label.label-info: a(href='#', rel='item={{item._id}}', style='color: #fff;') {{ item._id }}
-                  span.span2.label.muted {{ item.realmCost }}
+      div.accordion#profession-items-accordion
+        div.accordion-group(ng-repeat='(i, profession) in professionCost')
+          div.accordion-heading
+            h3: a.accordion-toggle(data-toggle='collapse', data-parent='profession-items-accordion', data-target='\#{{ profession._id }}') {{ profession._id | uppercase }}
+          div.accordion-body.collapse(id='{{ profession._id }}')
+            div.accordion-inner
+              table.table
+                thead
+                  tr
+                    th Item
+                    th Cost per unit
+                tbody
+                  tr(ng-repeat='item in profession.items')
+                    td: a(href='http://wowhead.com/item={{item._id}}') {{ item._id }}
+                    td
+                      span(rel='{{ item._id }}', class='TUJ')

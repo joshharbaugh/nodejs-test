@@ -32,7 +32,7 @@ TheUndermineJournal = {
 			if ((!isNaN(iid)) && o[iid]) {
 				s.style.marginLeft = '0.25ex';
 				s.style.marginRight = '0.25ex';
-				s.innerHTML = '<a href="https://theunderminejournal.com/item.php?item='+iid+'">'+o[iid].toString().replace(re,TheUndermineJournal.gsc)+'</a>';
+				s.innerHTML = '<a href="https://theunderminejournal.com/item.php?item='+iid+'" target="_blank" rel="nofollow">'+o[iid].toString().replace(re,TheUndermineJournal.gsc)+'</a>';
 			}
 		}
 		try {
