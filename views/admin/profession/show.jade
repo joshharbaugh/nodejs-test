@@ -26,14 +26,18 @@ block content
         thead
           th Name
           th Quantity
-          th Global Cost
+          th Database Cost
+          th TUJ Cost
           th(colspan='2')
         tbody  
           tr(ng-repeat='item in profession.items')
             td: a(href='#', rel='item={{ item._id }}') {{ item._id }}
             td {{ item.qty }}
-            td {{ item.globalCost }}
-            td: button(type='button', class='btn btn-warning', ng-click='editItem(item)') Edit
+            td
+              span(class='label', ng-class='{true:"label-info",false:"label-important"}[item.globalCost == prices[item._id]]') {{ item.globalCost }}
+            td
+              span(class='label') {{ prices[item._id] }}
+            td: button(type='button', class='btn btn-warning', ng-click='updateItem(item, prices[item._id])') Update
             td: button(type='button', class='btn btn-danger', ng-click='removeItem(item)') Remove
 
       form(ng-submit='addItem()')

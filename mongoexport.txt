@@ -1,0 +1,3 @@
+mongoexport --db test --collection professions --out C:\Users\Josh.Harbaugh\nodejs-test\professions.json --journal
+
+mongoexport --db test --collection realms --out C:\Users\Josh.Harbaugh\nodejs-test\realms.json --journal

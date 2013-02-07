@@ -2,13 +2,37 @@
 
 /* Controllers */
 
-app.controller('AppCtrl', ['$scope','$element','$http', function($scope, $element, $http) {
+app.controller('AppCtrl', ['$scope','$element','$http','$timeout', function($scope, $element, $http, $timeout) {
 
 	try {
 		
 		var realms     = $scope.realms     = window.realms     || {};
 		var profession = $scope.profession = window.profession || {};
 		var items      = $scope.items      = window.profession.items || [];
+		
+		/*
+		 * Bootstrap global prices with
+		 * TheUndermineJournal.com
+		 *
+		 */
+
+		(function() {
+			var self = setInterval(function() {
+				var prices  = window.TUJ_DATA;
+				if (prices) {
+					clearInterval(self);
+					$scope.$broadcast('load_prices', {data: prices});
+				}
+			}, 500);
+		})();
+
+		$scope.$on('load_prices', function(event, args) {		
+			$scope.prices = args.data;
+
+			if(!$scope.$$phase) {
+				$scope.$apply();
+			}
+		});
 
 	} catch(e) {}
 
@@ -17,14 +41,25 @@ app.controller('AppCtrl', ['$scope','$element','$http', function($scope, $elemen
 		var itemId  = $('#itemId')[0].value;
 		var itemQty = $('#itemQty')[0].value;
 
-		$http.post('/admin/profession/' + profession._id, {"_id":itemId, "qty":itemQty}).success(function(data) {
-			items.push({"_id":data._id, "qty":data.qty, "globalCost":data.globalCost});
-			$('#itemId')[0].value = '';
-			$('#itemQty')[0].value = '';
+		$http.post('/admin/' + profession._id + '/item/create', {"_id":itemId, "qty":itemQty}).success(function(data) {
+			if (data) {
+				items.push({"_id":data._id, "qty":data.qty, "globalCost":data.globalCost});
+				$('#itemId')[0].value = '';
+				$('#itemQty')[0].value = '';
+			}
+		});
 
-			$http.post('/admin/realms/' + profession._id, {"_id":data._id, "qty":data.qty, "globalCost":data.globalCost}).success(function(data) {
-				console.log('response', data);
-			});
+	}
+
+	$scope.updateItem = function(item, price) {
+
+		console.log(item, price);
+
+		item.globalCost = price;
+
+		$http.put('/admin/' + profession._id + '/item/' + item._id, item).success(function(data) {
+
+			console.log(data);
 
 		});
 
@@ -58,30 +93,6 @@ app.controller('AppCtrl', ['$scope','$element','$http', function($scope, $elemen
 						console.log(data);
 
 					});
-
-					/*$http.delete('/admin/' + profession._id + '/deleteItem', {method: 'DELETE', data: item}).success(function(data) {
-						if(data == "success") {
-
-							console.log(item._id + ' removed successfully from professions collection.');
-
-							$http.delete('/admin/' + profession._id + '/item/' + item._id, {method: 'DELETE'}).success(function(data) {
-								if(data == 'success') {
-
-									console.log(item._id + ' removed successfully from realms collection.');
-
-									items.splice(index, 1);
-
-								}
-							}).error(function(data) {
-
-								console.log(data);
-
-							});
-
-						}
-					}).error(function(data) {
-						alert('Unable to remove item. Please try again.');
-					});*/
 				}
 			}
 		}

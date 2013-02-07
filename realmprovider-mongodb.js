@@ -40,44 +40,6 @@ RealmProvider.prototype.findById = function(id, callback) {
   });
 };
 
-RealmProvider.prototype.addItem = function(profession, item, callback) {
-  this.getCollection(function(error, realms_collection) {
-    if( error ) callback(error)
-    else {
-
-      console.log('item', item);
-
-      realms_collection.update({ "professionCost._id": profession }, { $push: { "professionCost.$.items": { _id:item._id, available:0, realmCost:item.globalCost } } }, {upsert: true, multi: true}, function(error, result) {
-        if( error ) callback(error)
-        else callback(null, result)
-      });
-
-    }
-  });
-}
-
-RealmProvider.prototype.deleteItem = function(profession, item, callback) {
-  this.getCollection(function(error, realms_collection) {
-    if( error ) callback(error)
-    else {
-
-      if (item.length > 0) {
-
-        realms_collection.update({ "professionCost._id": profession, "professionCost.items._id": item._id }, { $pull: { "professionCost.$.items": item } }, function(error) {
-          if( error ) callback(error)
-          else callback(null, "success")
-        });
-
-      } else {
-
-        callback(null, "item object is empty");
-      
-      }
-
-    }
-  })
-}
-
 RealmProvider.prototype.save = function(realms, callback) {
   this.getCollection(function(error, realms_collection) {
     if( error ) callback(error)
