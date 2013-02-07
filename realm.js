@@ -96,7 +96,9 @@ exports.addItem = function(req, res) {
 exports.deleteItem = function(req, res) {
 	var b = req.body;
 
-	console.log('req.body', b);
+	console.log(req.params.id);
+
+	console.log(b, req.body);
 
 	RealmProvider.deleteItem(req.params.id, b, function(err, resp) {
 		if ( err ) throw err;

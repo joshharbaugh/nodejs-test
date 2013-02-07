@@ -38,21 +38,50 @@ app.controller('AppCtrl', ['$scope','$element','$http', function($scope, $elemen
 
 	$scope.removeItem = function(item) {
 
-		console.log(item, typeof item);
-
 		for(var key in items) {
 			if(items.hasOwnProperty(key)) {
 				if(item._id === items[key]._id) {
 					var index = items.indexOf(items[key]);
-					$http.delete('/admin/profession/' + profession._id + '/deleteItem', {method: 'DELETE', data: item}).success(function(data) {
-						if(data == "success") items.splice(index, 1); console.log(item._id + ' removed successfully!');
+
+					console.log(item);
+
+					$http.post('/admin/' + profession._id + '/item/' + item._id + '/delete', item).success(function(data) {
+						if(data == 'success') {
+
+							console.log(item._id + ' removed successfully from PROFESSIONS and REALMS collections');
+
+							items.splice(index, 1);
+
+						}
 					}).error(function(data) {
-						alert('Unable to remove item. Please try again.');
+
+						console.log(data);
+
 					});
 
-					$http.delete('/admin/realms/' + profession._id + '/deleteItem', {method: 'DELETE', data: item}).success(function(data) {
-						console.log('response', data);
-					});
+					/*$http.delete('/admin/' + profession._id + '/deleteItem', {method: 'DELETE', data: item}).success(function(data) {
+						if(data == "success") {
+
+							console.log(item._id + ' removed successfully from professions collection.');
+
+							$http.delete('/admin/' + profession._id + '/item/' + item._id, {method: 'DELETE'}).success(function(data) {
+								if(data == 'success') {
+
+									console.log(item._id + ' removed successfully from realms collection.');
+
+									items.splice(index, 1);
+
+								}
+							}).error(function(data) {
+
+								console.log(data);
+
+							});
+
+						}
+					}).error(function(data) {
+						alert('Unable to remove item. Please try again.');
+					});*/
 				}
 			}
 		}

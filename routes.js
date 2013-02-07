@@ -1,4 +1,4 @@
-exports = module.exports = function(app, realm, admin, profession) {
+exports = module.exports = function(app, realm, admin, profession, item) {
 
 	// SETTING CONTENT-TYPE FOR ALL RESPONSES TO APPLICATION/JSON
 	// app.get('/*', function(req, res, next) { res.contentType('application/json'); next(); });
@@ -13,8 +13,8 @@ exports = module.exports = function(app, realm, admin, profession) {
 
 	// BACK-END ROUTES
 	app.get('/admin', admin.index);
+
 	app.post('/admin/realms/:id', realm.addItem);
-	app.delete('/admin/realms/:id/deleteItem', realm.deleteItem);
 
 	// PROFESSIONS ADMIN
 	app.get('/admin/professions', profession.index);
@@ -24,5 +24,7 @@ exports = module.exports = function(app, realm, admin, profession) {
 	app.post('/admin/profession/:id', profession.addItem);
 	app.put('/admin/profession/:id', profession.update);
 	app.delete('/admin/profession/:id', profession.delete);
-	app.delete('/admin/profession/:id/deleteItem', profession.deleteItem);
+
+	// ITEM
+	app.post('/admin/:name/item/:id/delete', item.delete); // bodyParser not working when using DELETE method
 }

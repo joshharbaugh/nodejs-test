@@ -15,27 +15,12 @@ block content
 
   ul.nav.nav-pills
     li.active
-      a(href='#detail-pane', data-toggle='tab') Details
-    li
       a(href='#items-pane', data-toggle='tab') Items
+    li
+      a(href='#detail-pane', data-toggle='tab') Details
 
   div.pill-content
-    div.pill-pane.active#detail-pane
-      form(method='POST', action='/admin/profession/' + profession._id)
-        input(type='hidden', name='_method', value='PUT')
-        fieldset
-          legend Details
-
-          label ID
-          input(type='text', value=profession._id, name='_id', placeholder='_id', disabled)
-    
-          label Name
-          input(type='text', value=profession.name, name='name', placeholder='name')
-    
-        div.form-actions
-          button(type='submit', class='btn btn-primary') Update
-
-    div.pill-pane#items-pane
+    div.pill-pane.active#items-pane
       legend Items
       table.table
         thead
@@ -63,3 +48,18 @@ block content
           
         div.form-actions
           button(type='submit', class='btn btn-primary') Add
+
+    div.pill-pane#detail-pane
+      form(method='POST', action='/admin/profession/' + profession._id)
+        input(type='hidden', name='_method', value='PUT')
+        fieldset
+          legend Details
+
+          label ID
+          input(type='text', value=profession._id, name='_id', placeholder='_id', disabled)
+    
+          label Name
+          input(type='text', value=profession.name, name='name', placeholder='name')
+    
+        div.form-actions
+          button(type='submit', class='btn btn-primary') Update

@@ -61,13 +61,19 @@ RealmProvider.prototype.deleteItem = function(profession, item, callback) {
     if( error ) callback(error)
     else {
 
-      console.log(profession + '\n');
-      console.log(item);
+      if (item.length > 0) {
 
-      realms_collection.update({ "professionCost._id": profession, "professionCost.items._id": item._id }, { $unset: { "professionCost.items.$": "" } }, function(error, result) {
-        if( error ) callback(error)
-        else callback(null, "success")
-      });
+        realms_collection.update({ "professionCost._id": profession, "professionCost.items._id": item._id }, { $pull: { "professionCost.$.items": item } }, function(error) {
+          if( error ) callback(error)
+          else callback(null, "success")
+        });
+
+      } else {
+
+        callback(null, "item object is empty");
+      
+      }
+
     }
   })
 }

@@ -1,6 +1,7 @@
 var express = require('express')
   , http    = require('http')
   , path    = require('path')
+  , item   = require('./item')
   , realm   = require('./realm')
   , profession = require('./profession')
   , admin   = require('./admin')
@@ -25,11 +26,11 @@ app.configure(function(){
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.compress());
-  app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(app.router);
+  app.use(express.bodyParser());
   app.use(require('less-middleware')({ src: __dirname + '/public' }));
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use(app.router);
 });
 
 app.configure('development', function(){
@@ -40,7 +41,7 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
-require('./routes')(app, realm, admin, profession);
+require('./routes')(app, realm, admin, profession, item);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
