@@ -17,7 +17,7 @@ exports.create = function(req, res) {
 			res.app.db.models.Professions.update({_id: req.params.name}, {$push: {"items": payload} }, { upsert: true }, function(error) {
 				if( error ) res.send(500, error)
 				else {
-					res.app.db.models.Realm.update({ "professionCost._id": req.params.name }, { $push: { "professionCost.$.items": { _id:payload._id, available:0, realmCost:payload.globalCost } } }, {upsert: true, multi: true}, function(error) {
+					res.app.db.models.Realm.update({ "professionCost._id": req.params.name }, { $push: { "professionCost.$.items": { _id:payload._id, available:0, realmCost: { alliance: payload.globalCost, horde: payload.globalCost } } } }, {upsert: true, multi: true}, function(error) {
 						if( error ) res.send(500, error)
 						else res.json({"_id":payload._id, "qty":payload.qty, "globalCost":payload.globalCost});
 					});

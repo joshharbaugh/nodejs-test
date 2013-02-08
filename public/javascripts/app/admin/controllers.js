@@ -21,12 +21,12 @@ app.controller('AppCtrl', ['$scope','$element','$http','$timeout', function($sco
 				var prices  = window.TUJ_DATA;
 				if (prices) {
 					clearInterval(self);
-					$scope.$broadcast('load_prices', {data: prices});
+					$scope.$broadcast('prices_loaded', {data: prices});
 				}
 			}, 500);
 		})();
 
-		$scope.$on('load_prices', function(event, args) {		
+		$scope.$on('prices_loaded', function(event, args) {		
 			$scope.prices = args.data;
 
 			if(!$scope.$$phase) {

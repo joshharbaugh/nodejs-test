@@ -50,7 +50,7 @@ RealmProvider.prototype.save = function(realms, callback) {
       for( var i =0;i< realms.length;i++ ) {
         realm = realms[i];
         realm.created_at = new Date().toUTCString();
-        realm.professionCost = [
+        /*realm.professionCost = [
           {
             "_id": "alchemy",
             "alliance": 3000,
@@ -105,7 +105,7 @@ RealmProvider.prototype.save = function(realms, callback) {
             "horde": 2500,
             "items": []
           }
-        ];
+        ];*/
       }
 
       realms_collection.update({_id: realm.slug}, realm, { upsert: true }, function() {        

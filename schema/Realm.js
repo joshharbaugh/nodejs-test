@@ -5,7 +5,7 @@ exports = module.exports = function(app, mongoose) {
 		name: String,
 		slug: String,
 		professions: [{ _id: String, name: String, items: [{ _id: Number, qty: Number, globalCost: Number }] }],
-		professionCost: [{ _id: String, alliance: Number, horde: Number, items: [{ _id: Number, available: Number, realmCost: Number }] }]
+		professionCost: [{ _id: String, items: [{ _id: Number, available: Number, realmCost: { alliance: Number, horde: Number } }] }]
 	});
 
 	app.db.model('Realm', RealmSchema);
