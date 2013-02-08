@@ -17,7 +17,31 @@ app.controller('RealmCtrl', ['$scope', function($scope) {
 
 	try {
 
-		console.log('Professions', professions);
+		$scope.costToLevel = [];
+
+		for(var key in professionCost) {
+			
+			console.log('\n------------------------------------------------\n');
+
+			var ctl = 0;
+			
+			if(professionCost.hasOwnProperty(key)) {
+				var items = professionCost[key].items;
+				for(var k in items) {
+					if(items.hasOwnProperty(k)) {
+						var tCost = items[k].realmCost * professions[key].items[k].qty;
+						ctl += tCost;
+					}
+				}
+			}
+
+			professionCost[key].alliance = ctl;
+			professionCost[key].horde = ctl;
+
+			console.log(professionCost[key]._id+' alliance cost: ', professionCost[key].alliance);
+			console.log(professionCost[key]._id+' horde cost: ', professionCost[key].horde);
+
+		}
 
 	} catch(e) {
 

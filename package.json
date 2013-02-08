@@ -11,7 +11,9 @@
     "less-middleware": "*",
     "mongodb": "*",
     "mongoose": "*",
-    "mongoose-dbref": "*"
+    "mongoose-dbref": "*",
+    "http-agent": "*",
+    "jsdom": "*"
   },
   "devDependencies": {
     "nodemon": "*"

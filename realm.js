@@ -51,7 +51,7 @@ exports.read = function(req, res) {
 
         	try {
 
-        		res.app.db.models.Professions.find().exec(function(err, professions) {
+        		res.app.db.models.Professions.find().sort('name').exec(function(err, professions) {
 
         			if (err) throw err;
 

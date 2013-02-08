@@ -1,52 +1,58 @@
 extends layout
 
 block content
-  script
-    var realm        = !{document}
-    var professions  = !{professions}
-    var professionCost = !{professionCost}
+  div(data-ng-controller='RealmCtrl')
+    script
+      var realm        = !{document}
+      var professions  = !{professions}
+      var professionCost = !{professionCost}
 
-  p 
-    a(href='/') Return to list
-  h2.page-header= title
-    small.pull-right= realm.battlegroup
+    p 
+      a(href='/') Return to list
+    h2.page-header= title
+      small.pull-right= realm.battlegroup
 
-  ul.nav.nav-pills
-    li.active
-      a(href='#professions', data-toggle='tab') Professions
-    li
-      a(href='#profession-items', data-toggle='tab') Profession Items
-  
-  div.pill-content
-    div.pill-pane.active#professions
-      table.table.table-hover
-        thead
-          tr
-            th(width='30%')
-            th(width='30%') Alliance Cost
-            th(width='30%') Horde Cost
-        tbody
-          tr(ng-repeat='(i, profession) in professionCost')
-            td(width='30%') 
-              h3 {{ profession._id }}
-            td(width='30%')
-              p.cost: span.priceTag {{ profession.alliance }}
-            td(width='30%')
-              p.cost: span.priceTag {{ profession.horde }}
-    div.pill-pane#profession-items
-      div.accordion#profession-items-accordion
-        div.accordion-group(ng-repeat='(i, profession) in professionCost')
-          div.accordion-heading
-            h3: a.accordion-toggle(data-toggle='collapse', data-parent='profession-items-accordion', data-target='\#{{ profession._id }}') {{ profession._id | uppercase }}
-          div.accordion-body.collapse(id='{{ profession._id }}')
-            div.accordion-inner
-              table.table
-                thead
-                  tr
-                    th Item
-                    th Cost per unit
-                tbody
-                  tr(ng-repeat='item in profession.items')
-                    td: a(href='http://wowhead.com/item={{item._id}}') {{ item._id }}
-                    td
-                      span(rel='{{ item._id }}', class='TUJ')
+    ul.nav.nav-pills
+      li.active
+        a(href='#professions', data-toggle='tab') Professions
+      li
+        a(href='#profession-items', data-toggle='tab') Profession Items
+    
+    div.pill-content
+      div.pill-pane.active#professions
+        table.table.table-hover
+          thead
+            tr
+              th(width='30%')
+              th(width='30%') Alliance Cost
+              th(width='30%') Horde Cost
+          tbody
+            tr(ng-repeat='(i, profession) in professionCost')
+              td(width='30%') 
+                h3 {{ profession._id }}
+              td(width='30%')
+                p.cost: span(wp-price-tag='{{ profession.alliance }}') {{ profession.alliance }}
+              td(width='30%')
+                p.cost: span(wp-price-tag='{{ profession.horde }}') {{ profession.horde }}
+      div.pill-pane#profession-items
+        div.accordion#profession-items-accordion
+          div.accordion-group(ng-repeat='(i, profession) in professionCost')
+            div.accordion-heading
+              h3: a.accordion-toggle(data-toggle='collapse', data-parent='profession-items-accordion', data-target='\#{{ profession._id }}') {{ profession._id | uppercase }}
+            div.accordion-body.collapse(id='{{ profession._id }}')
+              div.accordion-inner
+                table.table
+                  thead
+                    tr
+                      th Item
+                      th Realm cost per unit
+                      th Average buyout cost
+                      th Qty
+                      th Realm cost to stockpile
+                  tbody
+                    tr(ng-repeat='(n, item) in profession.items')
+                      td: a(href='http://wowhead.com/item={{item._id}}') {{ item._id }}
+                      td: span(wp-price-tag='{{ item.realmCost }}') {{ item.realmCost }}
+                      td: span(rel='{{ item._id }}', class='TUJ')
+                      td {{ professions[i].items[n].qty }}
+                      td: span(wp-price-tag='{{ item.realmCost * professions[i].items[n].qty }}') {{ item.realmCost * professions[i].items[n].qty }}
