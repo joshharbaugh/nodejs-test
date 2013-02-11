@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	
+<project name="TestProject" default="dist">
+
+	<target name="prepare">
+		<echo msg="Making directory ./build" />
+		<mkdir dir="./build" />
+	</target>
+
+	<target name="build" depends="prepare">
+		<echo msg="Copying files to build directory..." />
+	</target>
+
+	<target name="dist" depends="build">
+		<echo msg="Creating archive..." />
+
+		<echo msg="Files copied and compressed in build directory OK!" />
+	</target>
+	
+</project>

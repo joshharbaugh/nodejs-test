@@ -1,12 +1,11 @@
 var util      = require('util'),
     httpAgent = require('http-agent'),
-    jsdom     = require('jsdom'),
     request   = require('request');
 
 var agent = httpAgent.create('us.battle.net', ['api/wow/auction/data/executus']);
   
 agent.addListener('next', function (e, agent) {
-	
+
 	var headers = agent.response.headers;
 	var json = JSON.parse(agent.body);
 

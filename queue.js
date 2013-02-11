@@ -6,17 +6,13 @@ exports = module.exports = function(app) {
   ;
   //create queue object in app
   app.queue = {};
-  
-  //setup queues
-  app.queue.create = require('./queue/create');
-  app.queue.process = require('./queue/process');
 
   var jobs = kue.createQueue()
     , Job = kue.Job;
 
   //create job
 
-  app.wowpro.models.Realm.find({}, {_id: 0, 'slug': 1}).exec(function(err, realms) {
+  app.db.models.Realm.find({}, {_id: 0, 'slug': 1}).exec(function(err, realms) {
 
   	function updateAll() {
 
@@ -46,19 +42,6 @@ exports = module.exports = function(app) {
     updateAll();
 
   });
-
-  /*function create() {
-	  var name = ['tobi', 'loki', 'jane', 'manny'][Math.random() * 4 | 0];
-	  console.log('- creating job for %s', name);
-	  jobs.create('video conversion', {
-	      title: 'converting ' + name + '\'s to avi'
-	    , user: 1
-	    , frames: 200
-	  }).save();
-	  setTimeout(create, Math.random() * 3000 | 0);
-  }
-
-  create();*/
 
   //process job one at a time
 
@@ -185,7 +168,7 @@ exports = module.exports = function(app) {
   });
 
   kue.app.set('title', 'Warcraft Professonal');
-  kue.app.listen(8080, function() {
+  kue.app.listen(3001, function() {
   	console.log("kue started");
   });
 }
