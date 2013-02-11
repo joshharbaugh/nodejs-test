@@ -5,8 +5,7 @@ var express = require('express')
   , realm   = require('./realm')
   , profession = require('./profession')
   , admin   = require('./admin')
-  , mongoose = require('mongoose')
-  , httpAgent = require('./http-agent');
+  , mongoose = require('mongoose');
 
 var app = express();
 
