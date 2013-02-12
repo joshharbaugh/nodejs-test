@@ -50,11 +50,9 @@ exports = module.exports = function(app) {
 					}).attempts(5).save();
 
 					job.on('complete', function(){
-						console.log("Job complete");
+						console.log("Job complete\n\n");
 					}).on('failed', function(){
 						job.log('Job failed: ', job.id);
-					}).on('progress', function(progress){
-					  process.stdout.write('\r  job #' + job.id + ' ' + progress + '% complete');
 					});
 
 				}
