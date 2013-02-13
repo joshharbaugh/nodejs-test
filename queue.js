@@ -141,6 +141,7 @@ exports = module.exports = function(app) {
 				  									if(items.hasOwnProperty(key)) {
 
 						  								var subtotal = 0;
+						  								var available = 0;
 														var filter = schema.alliance.auctions.filter(function(auction) {
 															return auction.item === items[key];
 														});
@@ -153,6 +154,7 @@ exports = module.exports = function(app) {
 																console.log('\n');
 																console.log(filter[object].item, Math.ceil(filter[object].buyout / filter[object].quantity), filter[object].owner);
 																subtotal += Math.ceil(filter[object].buyout / filter[object].quantity);
+																available += Math.ceil(filter[object].quantity);
 																console.log('\nSubtotal: ', subtotal, '\n');
 															}
 														}
@@ -162,7 +164,7 @@ exports = module.exports = function(app) {
 														} else {
 															var totalCost = 0;
 														}
-														filteredAlliance.push({"_id":items[key], "realmCost":totalCost});
+														filteredAlliance.push({"_id":items[key], "realmCost":totalCost, "available": available});
 
 						  							}
 
@@ -173,6 +175,7 @@ exports = module.exports = function(app) {
 				  									if(items.hasOwnProperty(key)) {
 
 						  								var subtotal = 0;
+						  								var available = 0;
 														var filter = schema.horde.auctions.filter(function(auction) {
 															return auction.item === items[key];
 														});
@@ -185,6 +188,7 @@ exports = module.exports = function(app) {
 																console.log('\n');
 																console.log(filter[object].item, Math.ceil(filter[object].buyout / filter[object].quantity), filter[object].owner);
 																subtotal += Math.ceil(filter[object].buyout / filter[object].quantity);
+																available += Math.ceil(filter[object].quantity);
 																console.log('\nSubtotal: ', subtotal, '\n');
 															}
 														}
@@ -194,7 +198,7 @@ exports = module.exports = function(app) {
 														} else {
 															var totalCost = 0;
 														}
-														filteredHorde.push({"_id":items[key], "realmCost":totalCost});
+														filteredHorde.push({"_id":items[key], "realmCost":totalCost, "available": available});
 
 						  							}
 
@@ -205,6 +209,7 @@ exports = module.exports = function(app) {
 				  									if(items.hasOwnProperty(key)) {
 
 				  										var subtotal = 0;
+				  										var available = 0;
 														var filter = schema.neutral.auctions.filter(function(auction) {
 															return auction.item === items[key];
 														});
@@ -217,6 +222,7 @@ exports = module.exports = function(app) {
 																console.log('\n');
 																console.log(filter[object].item, Math.ceil(filter[object].buyout / filter[object].quantity), filter[object].owner);
 																subtotal += Math.ceil(filter[object].buyout / filter[object].quantity);
+																available += Math.ceil(filter[object].quantity);
 																console.log('\nSubtotal: ', subtotal, '\n');
 															}
 														}
@@ -226,7 +232,7 @@ exports = module.exports = function(app) {
 														} else {
 															var totalCost = 0;
 														}
-														filteredNeutral.push({"_id":items[key], "realmCost":totalCost});
+														filteredNeutral.push({"_id":items[key], "realmCost":totalCost, "available": available});
 
 						  							}
 

@@ -67,8 +67,17 @@ exports.read = function(req, res) {
 
 	        		}
 
-	        		console.log('[REALM: ' + realm.name + ']\n\n');
-	        		res.render('realm_show', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify({}), professions:JSON.stringify(realm.professions), professionCost:JSON.stringify(realm.professionCost) });
+	        		res.app.db.models.Auction.find({_id: req.params.id}).exec(function(err, auctions) {
+
+	        			if (err) throw err;
+	        			else {
+
+	        				console.log('[REALM: ' + realm.name + ']\n\n');
+	        				res.render('realm_show', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(auctions[0]), professions:JSON.stringify(realm.professions), professionCost:JSON.stringify(realm.professionCost) });
+
+	        			}
+
+	        		});
 
         		});
 
