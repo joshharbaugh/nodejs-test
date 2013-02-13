@@ -15,14 +15,27 @@ exports.index = function(req, res) {
 exports.list = function(req, res) {
 
 	var realmName = req.params.name;
+	var items;
 	console.log('[REALM: ' + realmName + ']\n\n');
 
 	try {
+
+		request.get('http://localhost:3000/admin/items', function(error, response, body) {
+
+			if(error) throw error;
+			else {
+
+				items = JSON.parse(body);
+
+			}
+
+		});
+
 		armory.auctionData({name: realmName, region: 'us'}, function(err, response) {
 			if ( err ) console.log(err);
 
 			var filtered = [];
-			var items = [765, 785, 2447, 2450];
+			//var items = [765, 785, 2447, 2450];
 			
 			for (var key in items) {
 
@@ -44,8 +57,12 @@ exports.list = function(req, res) {
 							console.log('\nSubtotal: ', subtotal, '\n');
 						}
 					}
-					var totalCost = Math.ceil(subtotal / filter.length);
-					console.log('Total Cost = ', totalCost);
+					if (filter.length > 0) {
+						var totalCost = Math.ceil(subtotal / filter.length);
+						console.log('Total Cost = ', totalCost);
+					} else {
+						var totalCost = 0;
+					}
 					filtered.push({"id":items[key], "realmCost":totalCost});
 
 				}
@@ -54,10 +71,12 @@ exports.list = function(req, res) {
 
 			console.log(filtered);
 
-			res.render('admin/realm_show', { title: realmName, filter: JSON.stringify(filtered), realm:realmName, manage:realmName, bootstrap: JSON.stringify(realmName), document:JSON.stringify(realmName), professions:JSON.stringify(realmName) });
+			res.json(filtered);
+			//res.render('admin/realm_show', { title: realmName, filter: JSON.stringify(filtered), realm:realmName, manage:realmName, bootstrap: JSON.stringify(realmName), document:JSON.stringify(realmName), professions:JSON.stringify(realmName) });
 		});
 	} catch(e) {
-		res.render('admin/realm_show', { title: realmName, filter:'', realm:realmName, manage:realmName, bootstrap: JSON.stringify(realmName), document:JSON.stringify(realmName), auctions:JSON.stringify(response), professions:JSON.stringify(realmName) });
+		res.send(500, e);
+		//res.render('admin/realm_show', { title: realmName, filter:'', realm:realmName, manage:realmName, bootstrap: JSON.stringify(realmName), document:JSON.stringify(realmName), auctions:JSON.stringify(response), professions:JSON.stringify(realmName) });
 	}
 }
 

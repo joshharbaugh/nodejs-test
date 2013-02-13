@@ -13,4 +13,6 @@ block content
         b.caret
       ul.dropdown-menu
         each profession in professions
-          li: a(href='/admin/profession/' + profession._id)!= profession.name 
+          li: a(href='/admin/profession/' + profession._id)!= profession.name
+    li
+      a(href='/admin/items') Items

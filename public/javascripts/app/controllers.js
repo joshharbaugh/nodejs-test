@@ -14,6 +14,7 @@ app.controller('RealmCtrl', ['$scope', function($scope) {
 	var realm          = $scope.realm          = window.realm          || {};
 	var professions    = $scope.professions    = window.professions    || {};
 	var professionCost = $scope.professionCost = window.professionCost || {};
+	var auctions       = $scope.auctions       = window.auctions       || {};
 
 	try {
 

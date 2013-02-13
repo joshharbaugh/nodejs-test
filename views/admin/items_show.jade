@@ -1,0 +1,8 @@
+extends layout
+
+block content
+
+  table.table.table-hover
+    - each item in items
+      tr
+        td: a(href='http://wowhead.com/item=' + item)!= item

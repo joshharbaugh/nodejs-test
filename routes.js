@@ -13,6 +13,7 @@ exports = module.exports = function(app, realm, admin, profession, item) {
 
 	// BACK-END ROUTES
 	app.get('/admin', admin.index);
+	app.get('/admin/auctions/:name', admin.list);
 
 	// PROFESSIONS
 	app.get('/admin/professions', profession.index);
@@ -23,6 +24,7 @@ exports = module.exports = function(app, realm, admin, profession, item) {
 	app.delete('/admin/profession/:id', profession.delete);
 
 	// ITEM
+	app.get('/admin/items', item.index);
 	app.post('/admin/:name/item/create', item.create);
 	app.put('/admin/:name/item/:id', item.update);
 	app.post('/admin/:name/item/:id/delete', item.delete); // bodyParser not working when using DELETE method

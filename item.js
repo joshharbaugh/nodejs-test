@@ -1,5 +1,42 @@
 var wowhead = require('wowhead');
 
+exports.index = function(req, res) {
+	res.app.db.models.Professions.find({}).where('items._id').ne(null).exec(function(err, response) {
+		if (err) res.send(500, err);
+		else {
+
+			var items = [];
+
+			for(var key in response) {
+				if(response.hasOwnProperty(key)) {
+
+					var professionItems = response[key].items;
+
+					for(var item in professionItems) {
+
+						if(professionItems.hasOwnProperty(item)) {
+
+							var itemId = professionItems[item]._id;
+
+							if(items.indexOf(itemId) == -1 && typeof itemId == 'number') {
+
+								items.push(itemId);
+
+							}
+						
+						}
+					
+					}
+
+				}
+			}
+
+			res.json(items);
+			//res.render('admin/items_show', { title: '', manage: '', bootstrap: JSON.stringify(items), items: items });
+		}
+	});
+}
+
 exports.create = function(req, res) {
 
 	var payload = req.body;
