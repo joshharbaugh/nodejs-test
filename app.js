@@ -5,7 +5,8 @@ var express = require('express')
   , realm   = require('./realm')
   , profession = require('./profession')
   , admin   = require('./admin')
-  , mongoose = require('mongoose');
+  , mongoose = require('mongoose')
+  , cluster  = require('cluster');
 
 var app = express();
 
@@ -43,8 +44,12 @@ app.configure('production', function(){
 
 require('./routes')(app, realm, admin, profession, item);
 
-require('./queue')(app);
+/*
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
+
+*/
+
+module.exports = http.createServer(app);
