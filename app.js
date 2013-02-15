@@ -15,7 +15,7 @@ app.set('mongodb-uri', process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'l
 app.db = mongoose.createConnection(app.get('mongodb-uri'));
 
 app.db.once('open', function() {
-  console.log('Mongoose open for business');
+  //console.log('Mongoose open for business');
 });
 
 require('./models')(app, mongoose);
@@ -43,6 +43,8 @@ app.configure('production', function(){
 });
 
 require('./routes')(app, realm, admin, profession, item);
+
+require('./queue')(app);
 
 /*
 

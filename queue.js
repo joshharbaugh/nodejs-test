@@ -11,12 +11,8 @@ exports = module.exports = function(app) {
 
 	if (cluster.isMaster) {
 
-		for (var i=0; i < 2; ++i) {
-	        cluster.fork();
-	    }
-
 		kue.app.listen(3001);
-		
+
 	} else {
 
 		// pull from db
@@ -80,7 +76,7 @@ exports = module.exports = function(app) {
 			}
 
 			// task processor
-			jobs.process('realm', 5, function(job, done) {
+			jobs.process('realm', 1, function(job, done) {
 
 				var slug  = job.data.slug;
 
@@ -297,10 +293,6 @@ exports = module.exports = function(app) {
 					});
 				});
 			});*/
-
-			// setup Kue UI
-			//kue.app.listen(3001);
-			//console.log('Kue started on port 3001');
 
 		}
 
