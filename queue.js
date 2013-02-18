@@ -24,7 +24,7 @@ exports = module.exports = function(app, logger) {
 
 	function getAuctionData(items) {
 
-		app.db.models.Realm.find({}, {_id: 0, 'slug': 1}).exec(function(err, realms) {
+		app.db.models.Realm.find({}, {_id: 0, 'slug': 1}).limit(1).exec(function(err, realms) {
 
 			if (err) return err;
 			
@@ -39,10 +39,9 @@ exports = module.exports = function(app, logger) {
 							slug: realms[key].slug
 						}).attempts(5).save();
 
-						job.on('complete', function(){
-							//console.log("Job complete\n\n");
-						}).on('failed', function(){
+						job.on('failed', function(){
 							job.log('Job failed: ', job.id);
+							logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '[JOB '+job.id+'] Failed.');
 						});
 
 					}
@@ -69,26 +68,33 @@ exports = module.exports = function(app, logger) {
 
 					var remoteUrl = 'http://us.battle.net/api/wow/auction/data/' + slug;
 
-					var signature = crypto.createHmac('sha1', 'UL7D3D3U9LZ9');
+					console.log('GET' + '\n' + new Date().toUTCString() + '\n' + '/api/wow/auction/data/' + slug + '\n');
 
-			        signature.update(
-			            'GET' + '\n' +
-			            new Date().toUTCString() + '\n' +
-			            '/api/wow/auction/data/' + slug + '\n'
-			        );
+					var signature =
+						crypto.createHmac('sha1', 'UL7D3D3U9LZ9')
+						.update('GET' + '\n' + new Date().toUTCString() + '\n' + '/api/wow/auction/data/' + slug + '\n')
+			            .digest('base64');
 
-			        var headers = {'auth': 'BNET CAUS5YMFED6D:' + signature.digest('base64') + ''};
+			        //var headers = {'auth': 'BNET CAUS5YMFED6D:' + signature.digest('base64') + ''};
 
-					request.get(remoteUrl, {headers: headers}, function(err, response, body) {
+			        console.log(signature);
+
+					request({
+						'method': 'GET',
+						'uri': remoteUrl,
+						'headers': {
+							'Authorization': 'BNET CAUS5YMFED6D:' + signature
+						}
+					}, function(err, response, body) {
 
 						if (err) {
-							//console.log('remote error', err);
+							console.log('remote error', err);
 							logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '['+slug+'] Remote error: ' + err);
 							done(err);
 						}
 
-						//console.log(response.headers);
-						//console.log(body);
+						//console.log(response);
+						console.log(body);
 
 			  			if (!err && response.statusCode == 200) {
 
