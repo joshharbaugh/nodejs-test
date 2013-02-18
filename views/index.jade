@@ -1,21 +1,4 @@
 extends layout
 
 block content
-  script
-    var realms = !{collection}
-
-  h1= title
-  table#realms.table.table-hover
-    thead
-      tr
-        th Name
-        th Status
-    tbody
-    - each realm in realms
-      tr
-        td
-          a(href="/realm/"+realm._id)!= realm.name
-        td= realm.status
-    tfoot
-      tr
-        td(colspan="2")= realms.length
+  div(ng-view)

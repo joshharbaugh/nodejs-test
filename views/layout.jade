@@ -3,6 +3,7 @@ html(ng-app='app')
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
 
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js')
@@ -15,7 +16,27 @@ html(ng-app='app')
     script(src='/javascripts/app/controllers.js')
     script
       var wowhead_tooltips = { "renamelinks": true }
+      var realms = !{collection}
     
   body(data-ng-controller='AppCtrl')
+    div.navbar.navbar-inverse.navbar-fixed-top
+      div.navbar-inner
+        a.brand(href='/') Warcraft Professional
+        div.nav-collapse.collapse
+          ul.nav
+            li.active
+              a(href='/') Realms
+            li
+              a(href='#about') About
+            li
+              a(href='#contact') Contact
     div.container-fluid
-      block content
+      div.row-fluid
+        div.span3.realms-sidebar
+          include partials/sidebar          
+        div.span9
+          block content
+      footer
+        p &copy;
+          a(href='http://www.warcraftprofessional.com/blog/?ref=app') Warcraft Professional
+          | uses names and images from World of Warcraft, and data proprietary to Blizzard Entertainment, Inc. World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.

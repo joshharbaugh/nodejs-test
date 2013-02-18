@@ -2,7 +2,7 @@
 
 /* Directives */
 
-app.directive('wpPriceTag', ['$compile','$timeout', function($compile,$timeout) {
+angular.module('app').directive('wpPriceTag', ['$compile','$timeout', function($compile,$timeout) {
 
 	return {
 		restrict: 'A',

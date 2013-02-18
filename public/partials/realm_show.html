@@ -1,0 +1,99 @@
+<div data-ng-controller="RealmCtrl">
+
+	<p><a href="/">Return to list</a></p>
+	<h2 class="page-header">
+		{{ realm.name }}
+		<small class="pull-right">{{ realm.battlegroup }}</small>
+	</h2>
+
+	<ul class="nav nav-pills">
+		<li class="active">
+			<a href='#professions' data-toggle='tab'>Professions</a>
+		</li>
+		<li>
+			<a href='#profession-items' data-toggle='tab'>Profession Items</a>
+		</li>
+	</ul>
+
+	<div class="pill-content">
+		<div class="pill-pane active" id="professions">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th width='30%'></th>
+						<th width='30%'>Alliance Cost</th>
+						<th width='30%'>Horde Cost</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat='(i, profession) in professionCost'>
+						<td width='30%'> 
+							<h3>{{ profession._id }}</h3>
+							<td width='30%'>
+								<p class="cost">
+								<span wp-price-tag='{{ profession.alliance }}'>{{ profession.alliance }}</span>
+								</p>
+							</td>
+							<td width='30%'>
+								<p class="cost">
+								<span wp-price-tag='{{ profession.horde }}'>{{ profession.horde }}</span>
+								</p>
+							</td>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="pill-pane" id="profession-items">
+        <div class="accordion" id="profession-items-accordion">
+        	<div class="accordion-group" ng-repeat='(i, profession) in professionCost'>
+            	<div class="accordion-heading">
+            		<h3>
+            			<a class="accordion-toggle" data-toggle='collapse' data-parent='profession-items-accordion' data-target='#{{ profession._id }}'>{{ profession._id | uppercase }}</a>
+            		</h3>
+            	</div>
+                <div class="accordion-body collapse" id='{{ profession._id }}'>
+                    <div class="accordion-inner">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Global average</th>
+                                    <th>Realm cost per unit (A)</th>
+                                    <th>Realm cost per unit (H)</th>
+                                    <th>Qty</th>
+                                    <th>Realm cost to stockpile (A)</th>
+                                    <th>Realm cost to stockpile (H)</th>
+                                </tr>
+                            </thead>                        
+                            <tbody>
+                                <tr ng-repeat='(n, item) in profession.items'>
+                                    <td>
+                                        <a href='http://wowhead.com/item={{item._id}}'>{{ item._id }}</a>
+                                    </td>
+                                    <td>
+                                        <span wp-price-tag='{{ professions[i].items[n].globalCost }}'>{{ professions[i].items[n].globalCost }}</span>
+                                    </td>
+                                    <td>
+                                        <span wp-price-tag='{{ item.realmCost.alliance }}'>{{ item.realmCost.alliance }}</span>
+                                    </td>
+                                    <td>
+                                        <span wp-price-tag='{{ item.realmCost.horde }}'>{{ item.realmCost.horde }}</span>
+                                    </td>
+                                    <td>{{ professions[i].items[n].qty }}</td>
+                                    <td>
+                                        <span wp-price-tag='{{ item.realmCost.alliance * professions[i].items[n].qty }}'>{{ item.realmCost.alliance * professions[i].items[n].qty }}</span>
+                                    </td>
+                                    <td>
+                                        <span wp-price-tag='{{ item.realmCost.horde * professions[i].items[n].qty }}'>{{ item.realmCost.horde * professions[i].items[n].qty }}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+
+</div>

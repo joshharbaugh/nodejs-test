@@ -9,57 +9,34 @@ exports = module.exports = function(app) {
 	  , Job    = kue.Job
 	  , realms = [];
 
-	if (cluster.isMaster) {
+	request.get('http://localhost:3000/admin/items', function(error, response, body) {
 
-		kue.app.listen(3001);
+		if (error) return error;
 
-	} else {
+		else {
 
-		// pull from db
-		app.db.models.Realm.find({}, {_id: 0, 'slug': 1}).exec(function(err, data) {
+			var items = JSON.parse(body);
+			getAuctionData(items);
+
+		}
+
+	});
+
+	function getAuctionData(items) {
+
+		app.db.models.Realm.find({}, {_id: 0, 'slug': 1}).exec(function(err, realms) {
 
 			if (err) return err;
 			
 			else {
-
-				for(var key in data) {
-
-					if(data.hasOwnProperty(key)) {
-
-						realms.push(data[key].slug);
-
-					}
-
-				}
-
-				request.get('http://localhost:3000/admin/items', function(error, response, body) {
-
-					if(error) throw error;
-					else {
-
-						var items = JSON.parse(body);
-						getAuctionData(items);
-
-					}
-
-				});
-
-			}
-
-		});
-
-		// function to create task
-		function getAuctionData(items) {
-
-			if (realms.length > 0 && typeof realms != 'undefined') {
 
 				for(var key in realms) {
 					
 					if(realms.hasOwnProperty(key)) {
 					
 						var job = jobs.create('realm', {
-							title: 'Downloading ' + realms[key] + '',
-							slug: realms[key]
+							title: 'Downloading ' + realms[key].slug + '',
+							slug: realms[key].slug
 						}).attempts(5).save();
 
 						job.on('complete', function(){
@@ -71,231 +48,233 @@ exports = module.exports = function(app) {
 					}
 				}
 
-				setTimeout(getAuctionData, 3600000); //86400000
+				setTimeout(function(){ getAuctionData(items) }, 3600000); //86400000
 
 			}
 
-			// task processor
-			jobs.process('realm', 1, function(job, done) {
+		});
 
-				var slug  = job.data.slug;
+		// task processor
+		jobs.process('realm', 5, function(job, done) {
 
-				function next(i) {
+			var slug  = job.data.slug;
 
-					try {
+			function next(i) {
 
-						console.log('\n[STEP 1]----------------------------------------\n');
-						console.log('Processing... ' + slug);
+				try {
 
-						var remoteUrl = 'http://us.battle.net/api/wow/auction/data/' + slug;
+					console.log('\n[STEP 1]----------------------------------------\n');
+					console.log('Processing... ' + slug);
 
-						var signature = crypto.createHmac('sha1', 'UL7D3D3U9LZ9');
+					var remoteUrl = 'http://us.battle.net/api/wow/auction/data/' + slug;
 
-				        signature.update(
-				            'GET' + '\n' +
-				            new Date().toUTCString() + '\n' +
-				            '/api/wow/auction/data/' + slug + '\n'
-				        );
+					var signature = crypto.createHmac('sha1', 'UL7D3D3U9LZ9');
 
-				        var headers = {'auth': 'BNET CAUS5YMFED6D:' + signature.digest('base64') + ''};
+			        signature.update(
+			            'GET' + '\n' +
+			            new Date().toUTCString() + '\n' +
+			            '/api/wow/auction/data/' + slug + '\n'
+			        );
 
-						request.get(remoteUrl, {headers: headers}, function(err, response, body) {
+			        var headers = {'auth': 'BNET CAUS5YMFED6D:' + signature.digest('base64') + ''};
 
-							if (err) {
-								console.log('remote error', err);
-								done(err);
-							}
+					request.get(remoteUrl, {headers: headers}, function(err, response, body) {
 
-							//console.log(response.headers);
-							//console.log(body);
+						if (err) {
+							console.log('remote error', err);
+							done(err);
+						}
 
-				  			if (!err && response.statusCode == 200) {
+						//console.log(response.headers);
+						//console.log(body);
 
-				  				console.log('\n[STEP 2]----------------------------------------\n');
-				  				console.log('Remote data received.');
-				  				console.log('\n', response.headers);
-				  				//console.log('\n', response.body);
-				  				
-				  				try {
+			  			if (!err && response.statusCode == 200) {
 
-				  					var data        = JSON.parse(body);
-				  					var auctionFile = data.files[0].url;
+			  				console.log('\n[STEP 2]----------------------------------------\n');
+			  				console.log('Remote data received.');
+			  				console.log('\n', response.headers);
+			  				//console.log('\n', response.body);
+			  				
+			  				try {
 
-				  					request.get(auctionFile, {headers: headers}, function(e, r, b) {
-			  						
-				  						if (e) {
-				  							console.log('error', e);
-				  							done(e);
-				  						}
+			  					var data        = JSON.parse(body);
+			  					var auctionFile = data.files[0].url;
 
-				  						if (!e && r.statusCode == 200) {
+			  					request.get(auctionFile, {headers: headers}, function(e, r, b) {
+		  						
+			  						if (e) {
+			  							console.log('error', e);
+			  							done(e);
+			  						}
 
-				  							console.log('\n[STEP 3]----------------------------------------\n');
-				  							console.log("Remote JSON received successfully from " + auctionFile);
-				  							job.log('Responded with a status code: ' + r.statusCode + '\n');
-				  							job.log('JSON file: ' + auctionFile);
+			  						if (!e && r.statusCode == 200) {
 
-				  							if (b.length > 0) {
-				  								try {
-					  								var schema = JSON.parse(b);
-					  								var query = { '_id': slug };
-					  								var filteredAlliance = [];
-					  								var filteredHorde = [];
-					  								var filteredNeutral = [];
+			  							console.log('\n[STEP 3]----------------------------------------\n');
+			  							console.log("Remote JSON received successfully from " + auctionFile);
+			  							job.log('Responded with a status code: ' + r.statusCode + '\n');
+			  							job.log('JSON file: ' + auctionFile);
 
-					  								for (var key in items) {
+			  							if (b.length > 0) {
+			  								try {
+				  								var schema = JSON.parse(b);
+				  								var query = { '_id': slug };
+				  								var filteredAlliance = [];
+				  								var filteredHorde = [];
+				  								var filteredNeutral = [];
 
-					  									if(items.hasOwnProperty(key)) {
+				  								for (var key in items) {
 
-							  								var subtotal = 0;
-							  								var available = 0;
-															var filter = schema.alliance.auctions.filter(function(auction) {
-																return auction.item === items[key];
-															});
+				  									if(items.hasOwnProperty(key)) {
 
-															console.log('\n------------------------------[ ALLIANCE GROUP ]------------------------------\n');
-															console.log('Length  : ', filter.length, '\n');
+						  								var subtotal = 0;
+						  								var available = 0;
+														var filter = schema.alliance.auctions.filter(function(auction) {
+															return auction.item === items[key];
+														});
 
-															for(var object in filter) {
-																if(filter.hasOwnProperty(object)) {
-																	console.log('\n');
-																	console.log(filter[object].item, Math.ceil(filter[object].buyout / filter[object].quantity), filter[object].owner);
-																	subtotal += Math.ceil(filter[object].buyout / filter[object].quantity);
-																	available += Math.ceil(filter[object].quantity);
-																	console.log('\nSubtotal: ', subtotal, '\n');
-																}
+														//console.log('\n------------------------------[ ALLIANCE GROUP ]------------------------------\n');
+														//console.log('Length  : ', filter.length, '\n');
+
+														for(var object in filter) {
+															if(filter.hasOwnProperty(object)) {
+																//console.log('\n');
+																//console.log(filter[object].item, Math.ceil(filter[object].buyout / filter[object].quantity), filter[object].owner);
+																subtotal += Math.ceil(filter[object].buyout / filter[object].quantity);
+																available += Math.ceil(filter[object].quantity);
+																//console.log('\nSubtotal: ', subtotal, '\n');
 															}
-															if (filter.length > 0) {
-																var totalCost = Math.ceil(subtotal / filter.length);
-																console.log('Total Cost = ', totalCost);
-															} else {
-																var totalCost = 0;
+														}
+														if (filter.length > 0) {
+															var totalCost = Math.ceil(subtotal / filter.length);
+															//console.log('Total Cost = ', totalCost);
+														} else {
+															var totalCost = 0;
+														}
+														filteredAlliance.push({"_id":items[key], "realmCost":totalCost, "available": available});
+
+						  							}
+
+						  						}
+
+						  						for (var key in items) {
+
+				  									if(items.hasOwnProperty(key)) {
+
+						  								var subtotal = 0;
+						  								var available = 0;
+														var filter = schema.horde.auctions.filter(function(auction) {
+															return auction.item === items[key];
+														});
+
+														//console.log('\n------------------------------[ HORDE GROUP ]------------------------------\n');
+														//console.log('Length  : ', filter.length, '\n');
+
+														for(var object in filter) {
+															if(filter.hasOwnProperty(object)) {
+																//console.log('\n');
+																//console.log(filter[object].item, Math.ceil(filter[object].buyout / filter[object].quantity), filter[object].owner);
+																subtotal += Math.ceil(filter[object].buyout / filter[object].quantity);
+																available += Math.ceil(filter[object].quantity);
+																//console.log('\nSubtotal: ', subtotal, '\n');
 															}
-															filteredAlliance.push({"_id":items[key], "realmCost":totalCost, "available": available});
+														}
+														if (filter.length > 0) {
+															var totalCost = Math.ceil(subtotal / filter.length);
+															//console.log('Total Cost = ', totalCost);
+														} else {
+															var totalCost = 0;
+														}
+														filteredHorde.push({"_id":items[key], "realmCost":totalCost, "available": available});
 
-							  							}
+						  							}
 
-							  						}
+						  						}
 
-							  						for (var key in items) {
+						  						for (var key in items) {
 
-					  									if(items.hasOwnProperty(key)) {
+				  									if(items.hasOwnProperty(key)) {
 
-							  								var subtotal = 0;
-							  								var available = 0;
-															var filter = schema.horde.auctions.filter(function(auction) {
-																return auction.item === items[key];
-															});
+				  										var subtotal = 0;
+				  										var available = 0;
+														var filter = schema.neutral.auctions.filter(function(auction) {
+															return auction.item === items[key];
+														});
 
-															console.log('\n------------------------------[ HORDE GROUP ]------------------------------\n');
-															console.log('Length  : ', filter.length, '\n');
+														//console.log('\n------------------------------[ NEUTRAL GROUP ]------------------------------\n');
+														//console.log('Length  : ', filter.length, '\n');
 
-															for(var object in filter) {
-																if(filter.hasOwnProperty(object)) {
-																	console.log('\n');
-																	console.log(filter[object].item, Math.ceil(filter[object].buyout / filter[object].quantity), filter[object].owner);
-																	subtotal += Math.ceil(filter[object].buyout / filter[object].quantity);
-																	available += Math.ceil(filter[object].quantity);
-																	console.log('\nSubtotal: ', subtotal, '\n');
-																}
+														for(var object in filter) {
+															if(filter.hasOwnProperty(object)) {
+																//console.log('\n');
+																//console.log(filter[object].item, Math.ceil(filter[object].buyout / filter[object].quantity), filter[object].owner);
+																subtotal += Math.ceil(filter[object].buyout / filter[object].quantity);
+																available += Math.ceil(filter[object].quantity);
+																//console.log('\nSubtotal: ', subtotal, '\n');
 															}
-															if (filter.length > 0) {
-																var totalCost = Math.ceil(subtotal / filter.length);
-																console.log('Total Cost = ', totalCost);
-															} else {
-																var totalCost = 0;
-															}
-															filteredHorde.push({"_id":items[key], "realmCost":totalCost, "available": available});
+														}
+														if (filter.length > 0) {
+															var totalCost = Math.ceil(subtotal / filter.length);
+															//console.log('Total Cost = ', totalCost);
+														} else {
+															var totalCost = 0;
+														}
+														filteredNeutral.push({"_id":items[key], "realmCost":totalCost, "available": available});
 
-							  							}
+						  							}
 
-							  						}
+						  						}
 
-							  						for (var key in items) {
+						  						/*app.db.models.Realm.update({ "_id": slug, "professionCost.items._id": req.params.name }, { $push: { "professionCost.$.items": { _id:payload._id, available:0, realmCost: { alliance: payload.globalCost, horde: payload.globalCost } } } }, {upsert: true, multi: true}, function(error) {
+													if( error ) res.send(500, error)
+													else res.json({"_id":payload._id, "qty":payload.qty, "globalCost":payload.globalCost});
+												});*/
 
-					  									if(items.hasOwnProperty(key)) {
+												var currentDate = new Date().toUTCString();
 
-					  										var subtotal = 0;
-					  										var available = 0;
-															var filter = schema.neutral.auctions.filter(function(auction) {
-																return auction.item === items[key];
-															});
+						  						app.db.models.Auction.findOneAndUpdate(query, { $set: { last_modified: currentDate, realm: schema.realm, alliance: filteredAlliance, horde: filteredHorde, neutral: filteredNeutral } }, { upsert: true }, function(err, res) {
+											  		if (err) next(i + 1);
+											  		if (res) {
+											  			job.log('Modified: ' + currentDate);
+											  			done();											  			
+											  		}
+											  		else next(i + 1);
+											  	});
 
-															console.log('\n------------------------------[ NEUTRAL GROUP ]------------------------------\n');
-															console.log('Length  : ', filter.length, '\n');
+						  					} catch(e) { console.log('Error on Step 3', e); done(e); }
 
-															for(var object in filter) {
-																if(filter.hasOwnProperty(object)) {
-																	console.log('\n');
-																	console.log(filter[object].item, Math.ceil(filter[object].buyout / filter[object].quantity), filter[object].owner);
-																	subtotal += Math.ceil(filter[object].buyout / filter[object].quantity);
-																	available += Math.ceil(filter[object].quantity);
-																	console.log('\nSubtotal: ', subtotal, '\n');
-																}
-															}
-															if (filter.length > 0) {
-																var totalCost = Math.ceil(subtotal / filter.length);
-																console.log('Total Cost = ', totalCost);
-															} else {
-																var totalCost = 0;
-															}
-															filteredNeutral.push({"_id":items[key], "realmCost":totalCost, "available": available});
+							  			}
 
-							  							}
+			  						} else { job.log('general error'); done(); }
 
-							  						}
+			  					});
 
-							  						/*app.db.models.Realm.update({ "_id": slug, "professionCost.items._id": req.params.name }, { $push: { "professionCost.$.items": { _id:payload._id, available:0, realmCost: { alliance: payload.globalCost, horde: payload.globalCost } } } }, {upsert: true, multi: true}, function(error) {
-														if( error ) res.send(500, error)
-														else res.json({"_id":payload._id, "qty":payload.qty, "globalCost":payload.globalCost});
-													});*/
+			  				} catch(e) { console.log('Error on Step 2', e); done(e); }
 
-													var currentDate = new Date().toUTCString();
+			  			}
 
-							  						app.db.models.Auction.findOneAndUpdate(query, { $set: { last_modified: currentDate, realm: schema.realm, alliance: filteredAlliance, horde: filteredHorde, neutral: filteredNeutral } }, { upsert: true }, function(err, res) {
-												  		if (err) next(i + 1);
-												  		if (res) {
-												  			job.log('Modified: ' + currentDate);
-												  			done();											  			
-												  		}
-												  		else next(i + 1);
-												  	});
-
-							  					} catch(e) { console.log('Error on Step 3', e); done(e); }
-
-								  			}
-
-				  						} else { job.log('general error'); done(); }
-
-				  					});
-
-				  				} catch(e) { console.log('Error on Step 2', e); done(e); }
-
-				  			}
-
-						});
-
-					} catch(e) { console.log('Error on Step 1', e); done(e); }
-
-				}
-
-				next(0);
-
-			});
-
-			// remove stale jobs
-			/*jobs.on('job complete', function(id){
-				Job.get(id, function(err, job){
-					if (err) return;
-					job.remove(function(err){
-						if (err) throw err;
-						console.log('Removed completed job #%d', job.id);
 					});
-				});
-			});*/
 
-		}
+				} catch(e) { console.log('Error on Step 1', e); done(e); }
+
+			}
+
+			next(0);
+
+		});
 
 	}
+
+	// remove completed jobs
+	jobs.on('job complete', function(id){
+		Job.get(id, function(err, job){
+			if (err) return;
+			job.remove(function(err){
+				if (err) throw err;
+				console.log('Removed completed job #%d', job.id);
+			});
+		});
+	});
+
+	kue.app.listen(3001);
 
 }

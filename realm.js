@@ -4,8 +4,11 @@ var RealmProvider = require('./realmprovider-mongodb').RealmProvider
 var RealmProvider = new RealmProvider('localhost', 27017);
 
 exports.index = function(req, res) {
-	RealmProvider.findAll(function(err, realms){
-		res.render('index', { title: '', realms:realms, collection:JSON.stringify(realms) });
+	res.app.db.models.Realm.find().exec(function(err, realms) {
+		if( err ) res.send(500, err);
+        else {
+			res.render('index', { title: '', realms:realms, collection:JSON.stringify(realms) });
+		}
 	});
 }
 
@@ -73,7 +76,15 @@ exports.read = function(req, res) {
 	        			else {
 
 	        				console.log('[REALM: ' + realm.name + ']\n\n');
-	        				res.render('realm_show', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(auctions[0]), professions:JSON.stringify(realm.professions), professionCost:JSON.stringify(realm.professionCost) });
+
+	        				var payload            = new Object;
+	        				payload.realm          = realm;
+	        				payload.auctions       = auctions[0];
+	        				payload.professions    = realm.professions;
+	        				payload.professionCost = realm.professionCost;
+
+	        				res.json(payload);
+	        				//res.render('realm_show', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(auctions[0]), professions:JSON.stringify(realm.professions), professionCost:JSON.stringify(realm.professionCost) });
 
 	        			}
 

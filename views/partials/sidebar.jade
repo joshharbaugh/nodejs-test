@@ -1,0 +1,7 @@
+div.well.sidebar-nav
+  ul.nav.nav-list.realms-sidenav
+    - each realm in realms
+      li
+        a(href='#/realm/' + realm.slug)
+          i.icon-chevron-right
+          != realm.name

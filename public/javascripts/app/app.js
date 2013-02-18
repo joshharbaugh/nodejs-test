@@ -6,7 +6,7 @@ var app = angular.module('app', []).
 	config(['$routeProvider', function($routeProvider) {
 		$routeProvider
 		.when('/realm/:id', {
-			controller: 'RealmCtrl'
+			templateUrl: 'partials/realm_show.html'
 		})
 		.otherwise({
 			redirectTo: '/'
