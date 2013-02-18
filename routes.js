@@ -28,4 +28,6 @@ exports = module.exports = function(app, realm, admin, profession, item) {
 	app.post('/admin/:name/item/create', item.create);
 	app.put('/admin/:name/item/:id', item.update);
 	app.post('/admin/:name/item/:id/delete', item.delete); // bodyParser not working when using DELETE method
+
+	app.get('/logs/:limit', admin.log);
 }

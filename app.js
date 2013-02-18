@@ -6,9 +6,12 @@ var express = require('express')
   , profession = require('./profession')
   , admin   = require('./admin')
   , mongoose = require('mongoose')
-  , cluster  = require('cluster');
+  , cluster  = require('cluster')
+  , loggly   = require('loggly');
 
-var app = express();
+var app    = express();
+var config = { subdomain: "pixelhaven" };
+var logger = loggly.createClient(config);
 
 app.set('mongodb-uri', process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost/test');
 
@@ -32,7 +35,13 @@ app.configure(function(){
   app.use(require('less-middleware')({ src: __dirname + '/public' }));
   app.use(express.static(path.join(__dirname, 'public')));
   app.use(app.router);
+  app.use(logErrors);
 });
+
+function logErrors(err, req, res, next) {
+    logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '[ERROR] ' + err);
+    next(err);
+}
 
 app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
@@ -44,7 +53,7 @@ app.configure('production', function(){
 
 require('./routes')(app, realm, admin, profession, item);
 
-//require('./queue')(app);
+require('./queue')(app, logger);
 
 /*
 

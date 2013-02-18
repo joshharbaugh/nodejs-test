@@ -6,6 +6,26 @@ var RealmProvider = require('./realmprovider-mongodb').RealmProvider
 var RealmProvider = new RealmProvider('localhost', 27017);
 var ProfessionProvider = new ProfessionProvider('localhost', 27017);
 
+exports.log = function(req, res) {
+
+	var limit = req.params.limit;
+	var url = 'http://pixelhaven.loggly.com/api/search?start=0&rows=' + limit;
+
+	request({
+		'method': 'GET',
+		'uri': url,
+		'headers': {
+			'Authorization': 'Basic ' + new Buffer('joshharbaugh:sabbath83').toString('base64')
+		}
+	}, function(error, response, body) {
+
+		if(error) res.send(500, error);
+		else res.json(JSON.parse(body));
+
+	});
+
+}
+
 exports.index = function(req, res) {
 	ProfessionProvider.findAll(function(err, professions) {
 		res.render('admin/index', { title: '', manage: '', bootstrap: JSON.stringify(professions), professions: professions });
@@ -35,7 +55,6 @@ exports.list = function(req, res) {
 			if ( err ) console.log(err);
 
 			var filtered = [];
-			//var items = [765, 785, 2447, 2450];
 			
 			for (var key in items) {
 

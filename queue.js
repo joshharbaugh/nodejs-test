@@ -1,4 +1,4 @@
-exports = module.exports = function(app) {
+exports = module.exports = function(app, logger) {
 
 	var kue     = require('kue')
 	  , request = require('request')
@@ -40,7 +40,7 @@ exports = module.exports = function(app) {
 						}).attempts(5).save();
 
 						job.on('complete', function(){
-							console.log("Job complete\n\n");
+							//console.log("Job complete\n\n");
 						}).on('failed', function(){
 							job.log('Job failed: ', job.id);
 						});
@@ -63,8 +63,9 @@ exports = module.exports = function(app) {
 
 				try {
 
-					console.log('\n[STEP 1]----------------------------------------\n');
-					console.log('Processing... ' + slug);
+					//console.log('\n[STEP 1]----------------------------------------\n');
+					//console.log('Processing... ' + slug);
+					logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '['+slug+'] Processing...');
 
 					var remoteUrl = 'http://us.battle.net/api/wow/auction/data/' + slug;
 
@@ -81,7 +82,8 @@ exports = module.exports = function(app) {
 					request.get(remoteUrl, {headers: headers}, function(err, response, body) {
 
 						if (err) {
-							console.log('remote error', err);
+							//console.log('remote error', err);
+							logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '['+slug+'] Remote error: ' + err);
 							done(err);
 						}
 
@@ -90,9 +92,10 @@ exports = module.exports = function(app) {
 
 			  			if (!err && response.statusCode == 200) {
 
-			  				console.log('\n[STEP 2]----------------------------------------\n');
-			  				console.log('Remote data received.');
-			  				console.log('\n', response.headers);
+			  				//console.log('\n[STEP 2]----------------------------------------\n');
+			  				//console.log('Remote data received.');
+			  				//console.log('\n', response.headers);
+			  				logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '['+slug+'] Remote data received');
 			  				//console.log('\n', response.body);
 			  				
 			  				try {
@@ -103,16 +106,18 @@ exports = module.exports = function(app) {
 			  					request.get(auctionFile, {headers: headers}, function(e, r, b) {
 		  						
 			  						if (e) {
-			  							console.log('error', e);
+			  							//console.log('error', e);
+			  							logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '['+slug+'] Error: ' + e);
 			  							done(e);
 			  						}
 
 			  						if (!e && r.statusCode == 200) {
 
-			  							console.log('\n[STEP 3]----------------------------------------\n');
-			  							console.log("Remote JSON received successfully from " + auctionFile);
-			  							job.log('Responded with a status code: ' + r.statusCode + '\n');
+			  							//console.log('\n[STEP 3]----------------------------------------\n');
+			  							//console.log("Remote JSON received successfully from " + auctionFile);
+			  							job.log('Status code: ' + r.statusCode + '\n');
 			  							job.log('JSON file: ' + auctionFile);
+			  							logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '['+slug+'] Remote JSON received successfully from ' + auctionFile + ', Status code: ' + r.statusCode);
 
 			  							if (b.length > 0) {
 			  								try {
@@ -240,21 +245,33 @@ exports = module.exports = function(app) {
 											  		else next(i + 1);
 											  	});
 
-						  					} catch(e) { console.log('Error on Step 3', e); done(e); }
+						  					} catch(e) { 
+						  						//console.log('Error on Step 3', e);
+						  						logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', 'Error on step 3: ' + e);
+						  						done(e);
+						  					}
 
 							  			}
 
-			  						} else { job.log('general error'); done(); }
+			  						} else { job.log('general error'); logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '['+slug+'] General Error: Probably a 302 Redirect to an internal error page.'); done(); }
 
 			  					});
 
-			  				} catch(e) { console.log('Error on Step 2', e); done(e); }
+			  				} catch(e) { 
+			  					//console.log('Error on Step 2', e);
+			  					logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', 'Error on step 2: ' + e);
+			  					done(e);
+			  				}
 
 			  			}
 
 					});
 
-				} catch(e) { console.log('Error on Step 1', e); done(e); }
+				} catch(e) { 
+					//console.log('Error on Step 1', e);
+					logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', 'Error on step 1: ' + e);
+					done(e);
+				}
 
 			}
 
@@ -270,7 +287,7 @@ exports = module.exports = function(app) {
 			if (err) return;
 			job.remove(function(err){
 				if (err) throw err;
-				console.log('Removed completed job #%d', job.id);
+				//console.log('Removed completed job #%d', job.id);
 			});
 		});
 	});

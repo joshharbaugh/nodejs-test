@@ -1,5 +1,4 @@
 var cluster = require('cluster')
-  , cpus    = require('os').cpus().length
   , app     = require('./app');
 
 /*if ( cluster.isMaster ) {
