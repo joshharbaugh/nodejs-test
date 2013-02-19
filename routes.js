@@ -8,8 +8,8 @@ exports = module.exports = function(app, realm, admin, profession, item) {
 
 	// FRONT-END ROUTES
 	app.get('/', realm.index);
-	app.get('/realm/:id', realm.read);
-	app.get('/realms', realm.list);
+	app.get('/api/realm/:id', realm.read);
+	app.get('/api/realms', realm.list);
 
 	// BACK-END ROUTES
 	app.get('/admin', admin.index);

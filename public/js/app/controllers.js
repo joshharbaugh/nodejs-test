@@ -14,7 +14,7 @@ app.controller('AppCtrl', ['$scope', function($scope) {
 app.controller('RealmCtrl', ['$scope','$routeParams','$http', function($scope, $routeParams, $http) {
 
 	console.log('RealmCtrl');
-
+	
 	var realmName = $routeParams.id || null;
 	var realm, professions, professionCost, auctions;
 
@@ -23,10 +23,8 @@ app.controller('RealmCtrl', ['$scope','$routeParams','$http', function($scope, $
 	//var professionCost = $scope.professionCost = window.professionCost || {};
 	//var auctions       = $scope.auctions       = window.auctions       || {};
 
-	$http.get('/realm/' + realmName)
+	$http.get('/api/realm/' + realmName)
 		.success(function(response) {
-
-			console.log(response);
 
 			realm = $scope.realm = response.realm;
 			professions = $scope.professions = response.professions;

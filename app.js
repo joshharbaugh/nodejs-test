@@ -53,7 +53,7 @@ app.configure('production', function(){
 
 require('./routes')(app, realm, admin, profession, item);
 
-require('./queue')(app, logger);
+//require('./queue')(app, logger);
 
 /*
 

@@ -3,7 +3,10 @@ exports = module.exports = function(app, logger) {
 	var kue     = require('kue')
 	  , request = require('request')
 	  , crypto  = require('crypto')
-	  , cluster = require('cluster');
+	  , cluster = require('cluster')
+	  , zlib    = require('zlib');
+
+	//redis config goes here
 
 	var jobs   = kue.createQueue()
 	  , Job    = kue.Job
@@ -24,7 +27,7 @@ exports = module.exports = function(app, logger) {
 
 	function getAuctionData(items) {
 
-		app.db.models.Realm.find({}, {_id: 0, 'slug': 1}).limit(1).exec(function(err, realms) {
+		app.db.models.Realm.find({}, {_id: 0, 'slug': 1}).exec(function(err, realms) {
 
 			if (err) return err;
 			
@@ -39,7 +42,9 @@ exports = module.exports = function(app, logger) {
 							slug: realms[key].slug
 						}).attempts(5).save();
 
-						job.on('failed', function(){
+						job.on('complete', function() {
+							console.log(new Date().toUTCString() + ': Job complete.');
+						}).on('failed', function(){
 							job.log('Job failed: ', job.id);
 							logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '[JOB '+job.id+'] Failed.');
 						});
@@ -68,7 +73,7 @@ exports = module.exports = function(app, logger) {
 
 					var remoteUrl = 'http://us.battle.net/api/wow/auction/data/' + slug;
 
-					console.log('GET' + '\n' + new Date().toUTCString() + '\n' + '/api/wow/auction/data/' + slug + '\n');
+					//console.log('GET' + '\n' + new Date().toUTCString() + '\n' + '/api/wow/auction/data/' + slug + '\n');
 
 					var signature =
 						crypto.createHmac('sha1', 'UL7D3D3U9LZ9')
@@ -77,12 +82,14 @@ exports = module.exports = function(app, logger) {
 
 			        //var headers = {'auth': 'BNET CAUS5YMFED6D:' + signature.digest('base64') + ''};
 
-			        console.log(signature);
+			        //console.log(signature);
 
 					request({
 						'method': 'GET',
 						'uri': remoteUrl,
 						'headers': {
+							'Content-Type': 'application/json; charset=utf-8',
+							'Date': new Date().toUTCString(),
 							'Authorization': 'BNET CAUS5YMFED6D:' + signature
 						}
 					}, function(err, response, body) {
@@ -94,7 +101,7 @@ exports = module.exports = function(app, logger) {
 						}
 
 						//console.log(response);
-						console.log(body);
+						//console.log(body);
 
 			  			if (!err && response.statusCode == 200) {
 
@@ -109,7 +116,15 @@ exports = module.exports = function(app, logger) {
 			  					var data        = JSON.parse(body);
 			  					var auctionFile = data.files[0].url;
 
-			  					request.get(auctionFile, {headers: headers}, function(e, r, b) {
+			  					request({
+			  						'method': 'GET',
+			  						'uri': auctionFile,
+			  						'headers': {
+			  							'Content-Type': 'application/json; charset=utf-8',
+			  							'Date': new Date().toUTCString(),
+			  							'Authorization': 'BNET CAUS5YMFED6D:' + signature
+			  						}
+			  					}, function(e, r, b) {
 		  						
 			  						if (e) {
 			  							//console.log('error', e);
@@ -121,8 +136,8 @@ exports = module.exports = function(app, logger) {
 
 			  							//console.log('\n[STEP 3]----------------------------------------\n');
 			  							//console.log("Remote JSON received successfully from " + auctionFile);
-			  							job.log('Status code: ' + r.statusCode + '\n');
-			  							job.log('JSON file: ' + auctionFile);
+			  							//job.log('Status code: ' + r.statusCode + '\n');
+			  							//job.log('JSON file: ' + auctionFile);
 			  							logger.log('1dac1c85-be1f-4206-8377-80e852a59aa0', '['+slug+'] Remote JSON received successfully from ' + auctionFile + ', Status code: ' + r.statusCode);
 
 			  							if (b.length > 0) {
@@ -298,6 +313,7 @@ exports = module.exports = function(app, logger) {
 		});
 	});
 
+	kue.app.set('title', 'Warcraft Professional Job Queue');
 	kue.app.listen(3001);
 
 }

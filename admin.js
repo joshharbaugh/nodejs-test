@@ -9,7 +9,7 @@ var ProfessionProvider = new ProfessionProvider('localhost', 27017);
 exports.log = function(req, res) {
 
 	var limit = req.params.limit;
-	var url = 'http://pixelhaven.loggly.com/api/search?start=0&rows=' + limit;
+	var url = 'http://pixelhaven.loggly.com/api/search?timestamp_format=unixmillis&rows=' + limit;
 
 	request({
 		'method': 'GET',

@@ -1,19 +1,22 @@
 doctype 5
 html(ng-app='app')
   head
+    meta(name='fragment', content='!')
     title= title
-    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/bootstrap-responsive.min.css')
+    link(rel='stylesheet', href='/css/style.css')
 
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js')
     script(src='http://static.wowhead.com/widgets/power.js')
-    script(src='/javascripts/lib/tuj.js')
-    script(src='/javascripts/bootstrap.min.js')
-    script(src='/javascripts/app/app.js')
-    script(src='/javascripts/app/directives.js')
-    script(src='/javascripts/app/controllers.js')
+    script(src='/js/lib/tuj.js')
+    script(src='/js/lib/jquery.gritter.min.js')
+    script(src='/js/lib/bootstrap.min.js')
+    script(src='/js/app/app.js')
+    script(src='/js/app/directives.js')
+    script(src='/js/app/controllers.js')
+    script(src='/js/app/services.js')
     script
       var wowhead_tooltips = { "renamelinks": true }
       var realms = !{collection}
@@ -27,9 +30,9 @@ html(ng-app='app')
             li.active
               a(href='/') Realms
             li
-              a(href='#about') About
+              a(href='#!/about') About
             li
-              a(href='#contact') Contact
+              a(href='#!/contact') Contact
     div.container-fluid
       div.row-fluid
         div.span3.realms-sidebar
