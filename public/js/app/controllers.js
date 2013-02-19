@@ -2,18 +2,29 @@
 
 /* Controllers */
 
-app.controller('AppCtrl', ['$scope', function($scope) {
+app.controller('AppCtrl', ['$scope','routing', function($scope, routing) {
 
-	console.log('AppCtrl');
+	console.log('AppCtrl: ', routing.get());
 
 	var realms     = $scope.realms     = window.realms     || {};
 	var profession = $scope.profession = window.profession || {};
 
 }]);
 
-app.controller('RealmCtrl', ['$scope','$routeParams','$http', function($scope, $routeParams, $http) {
+app.controller('NavCtrl', ['$scope','$element', function($scope, $element) {
 
-	console.log('RealmCtrl');
+	var nav = $element.find('ul')[0];
+	console.log(nav);
+
+	$.each(nav.children, function(i, navItem) {
+		console.log(navItem.children[0].hash);
+	});
+
+}]);
+
+app.controller('RealmCtrl', ['$scope','$routeParams','$http','routing', function($scope, $routeParams, $http, routing) {
+
+	console.log('RealmCtrl: ', routing.get());
 	
 	var realmName = $routeParams.id || null;
 	var realm, professions, professionCost, auctions;
@@ -46,7 +57,7 @@ app.controller('RealmCtrl', ['$scope','$routeParams','$http', function($scope, $
 
 			for(var key in professionCost) {
 				
-				console.log('\n------------------------------------------------\n');
+				//console.log('\n------------------------------------------------\n');
 
 				var ctlA = 0,
 				    ctlH = 0;
@@ -95,8 +106,8 @@ app.controller('RealmCtrl', ['$scope','$routeParams','$http', function($scope, $
 				professionCost[key].alliance = ctlA;
 				professionCost[key].horde    = ctlH;
 
-				console.log(professionCost[key]._id+' alliance cost: ', professionCost[key].alliance);
-				console.log(professionCost[key]._id+' horde cost: ', professionCost[key].horde);
+				//console.log(professionCost[key]._id+' alliance cost: ', professionCost[key].alliance);
+				//console.log(professionCost[key]._id+' horde cost: ', professionCost[key].horde);
 
 			}
 

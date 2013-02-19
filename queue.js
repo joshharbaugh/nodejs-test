@@ -52,7 +52,7 @@ exports = module.exports = function(app, logger) {
 					}
 				}
 
-				setTimeout(function(){ getAuctionData(items) }, 3600000); //86400000
+				setTimeout(function(){ getAuctionData(items) }, 1200000); //86400000
 
 			}
 

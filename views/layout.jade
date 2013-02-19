@@ -21,21 +21,19 @@ html(ng-app='app')
       var wowhead_tooltips = { "renamelinks": true }
       var realms = !{collection}
     
-  body(data-ng-controller='AppCtrl')
-    div.navbar.navbar-inverse.navbar-fixed-top
+  body(data-ng-controller='AppCtrl', data-twttr-rendered='true')
+    div.navbar.navbar-inverse.navbar-fixed-top(data-ng-controller='NavCtrl')
       div.navbar-inner
-        a.brand(href='/') Warcraft Professional
+        a.brand(href='/#!') Warcraft Professional
         div.nav-collapse.collapse
           ul.nav
-            li.active
-              a(href='/') Realms
             li
               a(href='#!/about') About
             li
               a(href='#!/contact') Contact
     div.container-fluid
       div.row-fluid
-        div.span3.realms-sidebar
+        div.span3.realms-sidebar(data-ng-controller='NavCtrl')
           include partials/sidebar          
         div.span9
           block content

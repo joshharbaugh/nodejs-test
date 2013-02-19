@@ -11,8 +11,21 @@ app.service('routing', ['$rootScope', '$location', '$timeout', function($rootSco
     );
 
     function processUrl(url) {
-        console.log('URL: ', url);
+        // TODO
     }
+
+    var routingService = {
+        set: function(url) {
+            function attempt() {
+                $location.url(url);
+            }
+            $timeout(attempt);
+        },
+        get: function() {
+            return $location.url();            
+        }
+    }
+    return routingService;
 
 }]);
 app.run(['routing',function(routing) {}]);
