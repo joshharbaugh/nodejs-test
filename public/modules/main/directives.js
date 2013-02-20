@@ -1,8 +1,4 @@
-'use strict';
-
-/* Directives */
-
-angular.module('app').directive('wpPriceTag', ['$compile','$timeout', function($compile,$timeout) {
+app.directive('wpPriceTag', ['$compile','$timeout', function($compile,$timeout) {
 
 	return {
 		restrict: 'A',

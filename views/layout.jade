@@ -1,5 +1,5 @@
 doctype 5
-html(ng-app='app')
+html
   head
     meta(name='fragment', content='!')
     title= title
@@ -8,15 +8,8 @@ html(ng-app='app')
     link(rel='stylesheet', href='/css/style.css')
 
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js')
-    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js')
     script(src='http://static.wowhead.com/widgets/power.js')
-    script(src='/js/lib/tuj.js')
-    script(src='/js/lib/jquery.gritter.min.js')
-    script(src='/js/lib/bootstrap.min.js')
-    script(src='/js/app/app.js')
-    script(src='/js/app/directives.js')
-    script(src='/js/app/controllers.js')
-    script(src='/js/app/services.js')
+    script(src='/js/require.js', data-main='js/main')
     script
       var wowhead_tooltips = { "renamelinks": true }
       var realms = !{collection}
@@ -26,11 +19,11 @@ html(ng-app='app')
       div.navbar-inner
         a.brand(href='/#!') Warcraft Professional
         div.nav-collapse.collapse
-          ul.nav
+          ul.nav.site-nav
             li
-              a(href='#!/about') About
+              a(href='#!/about', data-target='/about') About
             li
-              a(href='#!/contact') Contact
+              a(href='#!/contact', data-target='/contact') Contact
     div.container-fluid
       div.row-fluid
         div.span3.realms-sidebar(data-ng-controller='NavCtrl')
