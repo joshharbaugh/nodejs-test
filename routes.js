@@ -1,7 +1,12 @@
 exports = module.exports = function(app, realm, admin, profession, item) {
 
+	app.all('/*', function(req, res, next) {
+		res.locals.scripts = app.locals.scripts;
+		next();
+	});
+	
 	// SETTING CONTENT-TYPE FOR ALL RESPONSES TO APPLICATION/JSON
-	// app.get('/*', function(req, res, next) { res.contentType('application/json'); next(); });
+	// app.get('/*', function(req, res, next) { var scripts = req.params.scripts; next(scripts); });
 	// app.post('/*', function(req, res, next) { res.contentType('application/json'); next(); });
 	// app.put('/*', function(req, res, next) { res.contentType('application/json'); next(); });
 	// app.delete('/*', function(req, res, next) { res.contentType('application/json'); next(); });

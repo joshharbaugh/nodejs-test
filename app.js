@@ -7,7 +7,10 @@ var express = require('express')
   , admin   = require('./admin')
   , mongoose = require('mongoose')
   , cluster  = require('cluster')
-  , loggly   = require('loggly');
+  , loggly   = require('loggly')
+  , fs       = require('fs')
+  , util     = require('util')
+  , requirejs = require('requirejs');
 
 var app    = express();
 var config = { subdomain: "pixelhaven" };
@@ -44,11 +47,53 @@ function logErrors(err, req, res, next) {
 }
 
 app.configure('development', function(){
+
+  console.log('[DEV]');
+
+  jsfiles = [];
+
+  var modules = path.join(__dirname, 'public/modules');
+
+  var modulesDir = fs.readdirSync(modules);
+
+  for(var module in modulesDir) {
+    
+    var contents = fs.readdirSync(modules + '/' + modulesDir[module]);    
+
+    console.log('Module:   ', modulesDir[module]);
+    console.log('Contains: ', contents);    
+
+    for(var file in contents) {
+
+      if(contents.hasOwnProperty(file)) {
+
+        var f = fs.statSync(modules + '/' + modulesDir[module] + '/' + contents[file]);
+
+        if(f.isFile()) {
+          //console.log('\n' + modules + '/' + modulesDir[module] + '/' + contents[file] + ' is file.');
+          jsfiles.push('/modules/' + modulesDir[module] + '/' + contents[file]);
+        }
+
+      }
+
+    }
+
+    console.log('\n--------------\n');
+
+  }
+
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+
+  app.locals.scripts = jsfiles;
+
 });
 
 app.configure('production', function(){
+
+  console.log('[PROD]');
+  
   app.use(express.errorHandler());
+
 });
 
 require('./routes')(app, realm, admin, profession, item);

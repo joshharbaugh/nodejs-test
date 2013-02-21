@@ -1,6 +1,8 @@
 requirejs.config({
     appDir: '../',
     baseUrl: '../modules',
+    dir: '../build',
+    optimize: 'uglifyjs',
     paths: {
         'angular': '../js/lib/angular',
         'bootstrap': '../js/lib/bootstrap',
@@ -24,14 +26,18 @@ requirejs.config({
         },
         'main/services': {
             deps: ['main/app']
+        },
+        './': {
+            deps: ['main/app']
         }
     }
 })
 
 require(["angular", "bootstrap", "gritter", "tuj", "taffy", "main/app", "main/controllers", "main/directives", "main/services"], function(app) {
 
-    // everything's loaded. awesome-sauce.
+    /*
+     * bootstrap our app
+     */
     angular.bootstrap(document, ['app']);
-    console.log('Rock \'n\' roll!');
 
 });
