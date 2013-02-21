@@ -18,9 +18,7 @@ app.controller('AppCtrl', ['$scope','routing', function($scope, routing) {
 app.controller('NavCtrl', ['$scope','$element','$location','$timeout', function($scope, $element, $location, $timeout) {
 
 	var nav = $element.find('ul')[0];
-
-	$scope.location = $location;
-
+	
 	function checkUrl(navItem, dataTarget) {
 		var navItem    = navItem    || null;
 		var dataTarget = dataTarget || null;

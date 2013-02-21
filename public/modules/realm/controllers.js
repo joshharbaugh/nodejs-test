@@ -6,6 +6,11 @@ var RealmCtrl = function($scope, $http, routing) {
 
     var realmName = routing.get().split('/').pop();
     var realm, professions, professionCost, auctions;
+    
+    setTimeout(function() {
+        var wowhead_tooltips = { "renamelinks": true };
+        //eval("t.innerHTML = '<span>' + data.name_" + LOCALES[locale] + " + '</span>';");
+    });
 
     $http.get('/api/realm/' + realmName)
         .success(function(response) {

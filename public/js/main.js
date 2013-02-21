@@ -34,7 +34,7 @@ requirejs.config({
     }
 });
 
-require(["angular", "modules", "bootstrap", "gritter", "tuj", "taffy", "main/app", "main/controllers", "main/directives", "main/services", "realm/controllers"], function() {
+require(["http://static.wowhead.com/widgets/power.js", "angular", "modules", "bootstrap", "gritter", "tuj", "taffy", "main/app", "main/controllers", "main/directives", "main/services", "realm/controllers"], function() {
 
     /*
      * bootstrap our app
