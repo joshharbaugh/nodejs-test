@@ -71,7 +71,6 @@ exports.read = function(req, res) {
 	        				payload.professionCost = realm.professionCost;
 
 	        				res.json(payload);
-	        				//res.render('realm_show', { title: realm.name, realm:realm, document:JSON.stringify(realm), auctions:JSON.stringify(auctions[0]), professions:JSON.stringify(realm.professions), professionCost:JSON.stringify(realm.professionCost) });
 
 	        			}
 

@@ -50,7 +50,13 @@ app.configure('development', function(){
 
   console.log('[DEV]');
 
-  jsfiles = [];
+  jsfiles = [
+    '/js/vendor/taffy.js',
+    '/js/lib/bootstrap.min.js',
+    '/js/lib/gritter.js',
+    '/js/lib/tuj.js',
+    '/js/lib/angular.js'
+  ];
 
   var modules = path.join(__dirname, 'public/modules');
 
@@ -84,6 +90,8 @@ app.configure('development', function(){
 
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
+  console.log(jsfiles);
+
   app.locals.scripts = jsfiles;
 
 });
@@ -99,13 +107,5 @@ app.configure('production', function(){
 require('./routes')(app, realm, admin, profession, item);
 
 //require('./queue')(app, logger);
-
-/*
-
-http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
-});
-
-*/
 
 module.exports = http.createServer(app);

@@ -203,8 +203,6 @@ app.service('routing', ['$rootScope', '$location', '$timeout', function($rootSco
                     }
                 }
             }
-
-            console.log(current);
         }
     }
 
@@ -247,7 +245,7 @@ app.service('routing', ['$rootScope', '$location', '$timeout', function($rootSco
     return routingService;
 
 }]);
-app.run(['routing',function(routing) {}]);
+app.run(['routing', function(routing) {}]);
 
 app.service('navigation', ['routing', function(routing) {
     var items = [];

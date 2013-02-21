@@ -1,6 +1,6 @@
 ul.nav.nav-list.realms-sidenav.site-nav
     - each realm in realms
         li
-            a(href='#!/realm/' + realm.slug, data-target='/realm/' + realm.slug)
+            a(href='#/realm/' + realm.slug, data-target='/realm/' + realm.slug)
                 i.icon-chevron-right
                 != realm.name

@@ -4,6 +4,7 @@ requirejs.config({
     dir: '../build',
     optimize: 'uglifyjs',
     paths: {
+        'modules': '../js/modules',
         'angular': '../js/lib/angular',
         'bootstrap': '../js/lib/bootstrap',
         'gritter': '../js/lib/gritter',
@@ -27,13 +28,13 @@ requirejs.config({
         'main/services': {
             deps: ['main/app']
         },
-        './': {
-            deps: ['main/app']
+        'realm/controllers': {
+            deps: ['main/app', 'main/services']
         }
     }
-})
+});
 
-require(["angular", "bootstrap", "gritter", "tuj", "taffy", "main/app", "main/controllers", "main/directives", "main/services"], function(app) {
+require(["angular", "modules", "bootstrap", "gritter", "tuj", "taffy", "main/app", "main/controllers", "main/directives", "main/services", "realm/controllers"], function() {
 
     /*
      * bootstrap our app

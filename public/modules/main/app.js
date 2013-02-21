@@ -2,16 +2,11 @@ var app = angular.module('app', []).config(['$routeProvider','$locationProvider'
     $routeProvider
     .when('/realm/:id', {
         templateUrl: '/modules/realm/partials/show.html'
-    })
-    .when('/about', {
-        templateUrl: '/modules/about/partials/show.html'
-    })
-    .when('/contact', {
-        templateUrl: '/modules/contact/partials/show.html'
-    })
-	.otherwise({
-        redirectTo: '/'
-	});
+    });
 
-    $locationProvider.html5Mode(false).hashPrefix('!');
+    //$locationProvider.html5Mode(false).hashPrefix('!');
+}]);
+app.run(['pages', function(pages) {
+    pages.register('/about', 'About', {partial:'(about,show)'});
+    pages.register('/contact', 'Contact', {partial:'(contact,show)'});
 }]);
