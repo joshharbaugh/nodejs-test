@@ -45,9 +45,8 @@ function logErrors(err, req, res, next) {
     next(err);
 }
 
-app.configure('development', function(){
-
-  console.log('[DEV]');
+// all environments
+app.configure(function(){
 
   jsfiles = [
     '/js/vendor/taffy.js',
@@ -75,7 +74,6 @@ app.configure('development', function(){
         var f = fs.statSync(modules + '/' + modulesDir[module] + '/' + contents[file]);
 
         if(f.isFile()) {
-          //console.log('\n' + modules + '/' + modulesDir[module] + '/' + contents[file] + ' is file.');
           jsfiles.push('/modules/' + modulesDir[module] + '/' + contents[file]);
         }
 
@@ -87,18 +85,24 @@ app.configure('development', function(){
 
   }
 
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-
   console.log(jsfiles);
 
   app.locals.scripts = jsfiles;
 
 });
 
+app.configure('development', function(){
+
+  console.log('[DEV]');
+
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+
+});
+
 app.configure('production', function(){
 
   console.log('[PROD]');
-  
+ 
   app.use(express.errorHandler());
 
 });
@@ -107,4 +111,6 @@ require('./routes')(app, realm, admin, profession, item);
 
 //require('./queue')(app, logger);
 
-module.exports = http.createServer(app);
+module.exports = http.createServer(app).listen(app.get('port'), function() {
+  console.log('running on port: ' + app.get('port'));
+});
