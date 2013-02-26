@@ -9,8 +9,7 @@ var express = require('express')
   , cluster  = require('cluster')
   , loggly   = require('loggly')
   , fs       = require('fs')
-  , util     = require('util')
-  , requirejs = require('requirejs');
+  , util     = require('util');
 
 var app    = express();
 var config = { subdomain: "pixelhaven" };
