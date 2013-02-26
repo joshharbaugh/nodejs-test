@@ -77,6 +77,12 @@ var RealmCtrl = function($scope, $http, routing) {
                 professionCost[key].alliance = ctlA;
                 professionCost[key].horde    = ctlH;
 
+                console.log('Alliance Cost\n');
+                console.log(professionCost[key].alliance);
+
+                console.log('Horde Cost\n');
+                console.log(professionCost[key].horde);
+
             }
 
         } catch(e) {
