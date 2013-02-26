@@ -89,6 +89,60 @@ exports.read = function(req, res) {
 
 }
 
+exports.readLocale = function(req, res) {
+
+	res.app.db.models.Realm.findOne({_id: req.params.id, locale: req.params.locale}).exec(function(err, realm) {
+		if( err ) res.send(500, err);
+        else {
+
+        	try {
+
+        		res.app.db.models.Professions.find().sort('name').exec(function(err, professions) {
+
+        			if (err) throw err;
+
+        			for (var obj in professions) {
+
+        				if(professions.hasOwnProperty(obj)) {
+
+		        			realm.professions.push(professions[obj]);
+		        		
+		        		}
+
+	        		}
+
+	        		res.app.db.models.Auction.find({_id: req.params.id}).exec(function(err, auctions) {
+
+	        			if (err) throw err;
+	        			else {
+
+	        				console.log('[EU REALM: ' + realm.name + ']\n\n');
+
+	        				var payload            = new Object;
+	        				payload.realm          = realm;
+	        				payload.auctions       = auctions[0];
+	        				payload.professions    = realm.professions;
+	        				payload.professionCost = realm.professionCost;
+
+	        				res.json(payload);
+
+	        			}
+
+	        		});
+
+        		});
+
+	        } catch(e) {
+
+	        	console.log('Exception: ' + e);
+
+	        }
+
+        }
+    });
+
+}
+
 exports.addItem = function(req, res) {
 	var b = req.body;
 

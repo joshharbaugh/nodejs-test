@@ -2,10 +2,14 @@
 
 /* Controllers */
 
-app.controller('AppCtrl', ['$scope','routing', function($scope, routing) {
+app.controller('AppCtrl', ['$scope','routing','locale', function($scope, routing, locale) {
 
 	var realms     = $scope.realms     = window.realms     || {};
 	var profession = $scope.profession = window.profession || {};
+
+	$scope.setLocale = function(_locale) {
+		locale.set(_locale);
+	}
 
 	routing.register(function(url) {
 		if( url == '' || url == '/' ) {
@@ -15,7 +19,7 @@ app.controller('AppCtrl', ['$scope','routing', function($scope, routing) {
 
 }]);
 
-app.controller('NavCtrl', ['$scope','$element','$location','$timeout', function($scope, $element, $location, $timeout) {
+app.controller('NavCtrl' ,['$scope','$element','$location','$timeout','$rootScope','locale', function($scope, $element, $location, $timeout, $rootScope, locale) {
 
 	var nav = $element.find('ul')[0];
 	

@@ -247,6 +247,32 @@ app.service('routing', ['$rootScope', '$location', '$timeout', function($rootSco
 }]);
 app.run(['routing', function(routing) {}]);
 
+app.service('locale', ['$rootScope', '$timeout', function($rootScope, $timeout) {
+
+    /* default */
+    var current = 'en_US';
+    $rootScope.$watch(
+        'locale',
+        function() {
+            $rootScope.locale = current;
+        }
+    );
+
+    var localeService = {
+        set: function(locale) {
+            $timeout(function() {
+                $rootScope.locale = locale;
+            });
+        },
+        get: function() {
+            return $rootScope.locale;
+        }
+    }
+    return localeService;
+
+}]);
+app.run(['locale', function(locale) {}]);
+
 app.service('navigation', ['routing', function(routing) {
     var items = [];
     var nav = {

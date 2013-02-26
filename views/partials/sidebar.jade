@@ -1,6 +1,54 @@
-ul.nav.nav-list.realms-sidenav.site-nav
-    - each realm in realms
-        li
-            a(href='#/realm/' + realm.slug, data-target='/realm/' + realm.slug)
-                i.icon-chevron-right
-                != realm.name
+
+div.well.well-small(style='width:230px') Current Locale: 
+    strong {{ locale }}
+    div.dropdown.pull-right
+        a.dropdown-toggle#dLabel(role='button', data-toggle='dropdown', data-target='#') Change
+            b.caret
+        ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
+            li.nav-header US
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#', data-locale='en_US') English
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#', data-locale='es_MX') Spanish
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#', data-locale='pt_BR') Portuguese
+            li.divider(role='locale')
+            li.nav-header Europe
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#en_GB', data-locale='en_GB') English (UK)
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#es_ES', data-locale='es_ES') Spanish
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#fr_FR', data-locale='fr_FR') French
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#ru_RU', data-locale='ru_RU') Russian
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#de_DE', data-locale='de_DE') German
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#pt_PT', data-locale='pt_PT') Portuguese
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#it_IT', data-locale='it_IT') Italian
+            li.divider(role='locale')
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#ko_KR', data-locale='ko_KR') Korean
+            li.divider(role='locale')
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#zh_TW', data-locale='zh_TW') Taiwan
+            li.divider(role='locale')
+            li(role='locale')
+                a(role='menuItem', tabindex='-1', href='#zh_CN', data-locale='zh_CN') Chinese
+div.pill-content
+    div.pill-pane.active(id='US')
+        ul.nav.nav-list.realms-sidenav.site-nav
+            - each realm in realms
+                li
+                    a(href='#/realm/' + realm.slug, data-target='/realm/' + realm.slug + '/{{ locale }}')
+                        i.icon-chevron-right
+                        != realm.name
+    div.pill-pane(id='EU')
+        ul.nav.nav-list.realms-sidenav.site-nav
+            - each realm in realms
+                li
+                    a(href='#/realm/' + realm.slug, data-target='/realm/' + realm.slug + '/{{ locale }}')
+                        i.icon-chevron-right
+                        != realm.name
