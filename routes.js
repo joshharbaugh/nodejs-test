@@ -11,6 +11,7 @@ exports = module.exports = function(app, realm, admin, profession, item) {
 	// FRONT-END ROUTES
 	app.get('/', realm.index);
 	app.get('/api/realm/:id', realm.read);
+	app.get('/api/realm/:id/:locale', realm.readLocale);
 	app.get('/api/realms', realm.list);
 
 	// BACK-END ROUTES
