@@ -9,8 +9,6 @@ var cluster = require('cluster')
         console.log('worker ' + worker.process.pid + ' died');
     });
 
-} else {*/
-    
-    // server init
+} else {
 
-//}
+}*/
