@@ -6,7 +6,8 @@
   "author": "Pixelhaven",
   "private": true,
   "scripts": {
-    "start": "nodemon server.js"
+    "startDev": "nodemon server.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
