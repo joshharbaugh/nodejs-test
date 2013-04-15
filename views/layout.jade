@@ -7,12 +7,12 @@ html
     link(rel='stylesheet', href='/css/bootstrap-responsive.min.css')
     link(rel='stylesheet', href='/css/style.css')
 
-    script(src='/js/require-jquery.js', data-main='js/main')
+    script(src='/js/require-jquery.js', data-main='/js/main')
     script
       var wowhead_tooltips = { "renamelinks": true }
       var realms = !{collection}
     
-  body(data-ng-controller='AppCtrl', data-twttr-rendered='true')
+  body(data-ng-controller='AppCtrl', data-twttr-rendered='true', class='ng-cloak')
     div.navbar.navbar-inverse.navbar-fixed-top(data-ng-controller='NavCtrl')
       div.navbar-inner
         a.brand(href='/#') Warcraft Professional

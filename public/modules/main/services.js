@@ -251,13 +251,10 @@ app.service('locale', ['$rootScope', '$timeout', function($rootScope, $timeout) 
 
     /* default */
     var current = 'en_US';
-    $rootScope.$watch(
-        'locale',
-        function() {
-            $rootScope.locale = current;
-        }
-    );
-
+    if(!$rootScope.locale) {
+        $rootScope.locale = current;
+    }
+    
     var localeService = {
         set: function(locale) {
             $timeout(function() {

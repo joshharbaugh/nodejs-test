@@ -9,6 +9,7 @@ app.controller('AppCtrl', ['$scope','routing','locale', function($scope, routing
 
 	$scope.setLocale = function(_locale) {
 		locale.set(_locale);
+		console.log('setLocale', _locale);
 	}
 
 	routing.register(function(url) {
@@ -22,7 +23,7 @@ app.controller('AppCtrl', ['$scope','routing','locale', function($scope, routing
 app.controller('NavCtrl' ,['$scope','$element','$location','$timeout','$rootScope','locale', function($scope, $element, $location, $timeout, $rootScope, locale) {
 
 	var nav = $element.find('ul')[0];
-	
+
 	function checkUrl(navItem, dataTarget) {
 		var navItem    = navItem    || null;
 		var dataTarget = dataTarget || null;

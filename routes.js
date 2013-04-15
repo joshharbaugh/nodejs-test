@@ -8,8 +8,7 @@ exports = module.exports = function(app, realm, admin, profession, item) {
 	// SETTING CONTENT-TYPE FOR ALL RESPONSES TO APPLICATION/JSON
 	// app.all('/*', function(req, res, next) { res.contentType('application/json'); next(); });
 
-	// FRONT-END ROUTES
-	app.get('/', realm.index);
+	//RESTful ROUTES
 	app.get('/api/realm/:id', realm.read);
 	app.get('/api/realm/:id/:locale', realm.readLocale);
 	app.get('/api/realms', realm.list);
@@ -33,4 +32,8 @@ exports = module.exports = function(app, realm, admin, profession, item) {
 	app.post('/admin/:name/item/:id/delete', item.delete); // bodyParser not working when using DELETE method
 
 	app.get('/logs/:limit', admin.log);
+
+	// FRONT-END ROUTES
+	app.get('*', realm.index);
+
 }

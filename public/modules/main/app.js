@@ -4,7 +4,7 @@ var app = angular.module('app', []).config(['$routeProvider','$locationProvider'
         templateUrl: '/modules/realm/partials/show.html'
     });
 
-    //$locationProvider.html5Mode(false).hashPrefix('!');
+    $locationProvider.html5Mode(true);
 }]);
 app.run(['pages', function(pages) {
     pages.register('/about', 'About', {partial:'(about,show)'});
