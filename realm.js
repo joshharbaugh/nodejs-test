@@ -13,7 +13,13 @@ exports.index = function(req, res) {
 }
 
 exports.list = function(req, res) {
-	res.redirect('/');
+	//res.redirect('/');
+  res.app.db.models.Realm.find().exec(function(err, realms) {
+    if( err ) res.send(500, err);
+    else {
+      res.json(realms);
+    }
+  });
 }
 
 exports.create = function(req, res) {

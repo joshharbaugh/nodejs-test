@@ -39,16 +39,16 @@ div.well.well-small(style='width:230px') Current Locale:
                 a(ng-click='setLocale("zh_CN")') Chinese
 div.pill-content
     div.pill-pane.active(id='US')
+        form.realms-sidenav-search
+            input(type='text', ng-model='search', placeholder='Search realms')
         ul.nav.nav-list.realms-sidenav.site-nav
-            - each realm in realms
-                li
-                    a(href='/realm/' + realm.slug, data-target='/realm/' + realm.slug + '/{{ locale }}')
-                        i.icon-chevron-right
-                        != realm.name
+            li(ng-repeat='realm in realms | filter:search')
+                a(href='/realm/{{realm.slug}}', data-target='/realm/{{realm.slug}}/{{ locale }}')
+                    i.icon-chevron-right
+                    | {{realm.name}}
     div.pill-pane(id='EU')
         ul.nav.nav-list.realms-sidenav.site-nav
-            - each realm in realms
-                li
-                    a(href='/realm/' + realm.slug, data-target='/realm/' + realm.slug + '/{{ locale }}')
-                        i.icon-chevron-right
-                        != realm.name
+            li(ng-repeat='realm in realms | filter:search')
+                a(href='/realm/{{realm.slug}}', data-target='/realm/{{realm.slug}}/{{ locale }}')
+                    i.icon-chevron-right
+                    | {{realm.name}}

@@ -20,7 +20,7 @@ app.controller('AppCtrl', ['$scope','routing','locale', function($scope, routing
 
 }]);
 
-app.controller('NavCtrl' ,['$scope','$element','$location','$timeout','$rootScope','locale', function($scope, $element, $location, $timeout, $rootScope, locale) {
+app.controller('NavCtrl' ,['$scope','$element','$location','$timeout','$rootScope','locale','$filter', function($scope, $element, $location, $timeout, $rootScope, locale, $filter) {
 
 	var nav = $element.find('ul')[0];
 

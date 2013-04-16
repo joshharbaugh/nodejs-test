@@ -141,6 +141,13 @@ h6 {
   margin-left: 0;
 }
 /* Sidebar */
+.realms-sidenav-search {
+  width: 100%;
+}
+.realms-sidenav-search input {
+  max-width: 236px;
+  width: 100%;
+}
 .realms-sidenav {
   width: 250px;
   margin: 30px 0 0;
